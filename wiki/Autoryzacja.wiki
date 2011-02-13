@@ -1,0 +1,24 @@
+Wymaga aktualizacji !
+
+= Proces autoryzacji =
+Autoryzacja i uwierzytelnianie jest realizowane niejako obok samej aplikacji, co pozwala na rozdzielenie procesu ustalania praw dostępu od tworzenia samej aplikacji. Domyślnie dostarczonych jest kilka adapterów do autoryzacji, jednak nic nie stoi na przeszkodzie, żeby stworzyć własne.
+= Dostarczone adaptery =
+Ustawienie wybranego adaptera wymaga umieszczenia nazwy klasy w pliku konfiguracji głownej(patrz [XMLMainConfig Konfiguracja podstawowa]).
+== `INIAuthAdapter` ==
+...
+== `XMLAuthAdapter` ==
+...
+== `DBAuthAdapter` ==
+...
+== `PublicAuthAdapter` ==
+...
+= Własny adapter =
+Żeby skonfigurować własny adapter autoryzacji należy dostarczyć implementacji interfejsu `AuthAdapterInterface`. Interfejs wymaga implementacji 3 metod:
+ * `public function authenticate($username, $password);` - metoda autoryzacji na podstawie podanych danych dostępowych, powinna zwracać wartości prawda/fałsz;
+ * `public function getRole($username);` - metoda zwracająca rolę użytkownika podanego w parametrze;
+ * `public function hasAccess($type, $resource, $role);` - metoda określająca prawo dostępu do podanego zasobu, `$type` może przyjmować poniższe wartości:
+   * `window` - dla dostępu do okna, wtedy `$resource` reprezentuje nazwę okna;
+   * `data` - dla dostępu do danych, wtedy `$resource` reprezentuje nazwę modelu danych;
+   * `media` - dla dostępu do mediów, wtedy `$resource` zawiera ścieżkę do żądnego medium;
+   * `custom` - dla dostępu do kontrolera dostarczonego przez użytkownika, wtedy `$resource` reprezentuje nazwę kontrolera.
+Klasę z implementacją należy umieścić w folderze 'library'(patrz [strukturaFolderow Struktura folderów]). Nie ma potrzeby ręcznego jej includowania. Należy jeszcze ustawić adapter jako domyślny(patrz [XMLMainConfig Konfiguracja podstawowa]).
