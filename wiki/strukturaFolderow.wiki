@@ -1,0 +1,22 @@
+= Struktura folderów =
+Pliki są zorganizowane według podanej struktury:
+ * Application-Root
+  * autowebsys
+   * application
+    * tutaj znajduje się silnik `autowebsys`. Nie ma potrzeby tu zaglądać :)
+   * library
+    * biblioteki systemu `autowebsys`, również nie ma potrzeby tu zaglądać.
+   * public
+    * serwer www powinien wskazywać na ten katalog jako główny.
+  * languages
+   * tutaj znajdują się wszystkie wyświetlane etykiety. Proponuję podział plików na foldery według nazewnictwa opisanego w `ISO 639-1`. `autowebsys` automatycznie skanuje wszystkie pliki i rozróżnia je według sufiksu nadanego według `ISO 639-1`. Język dobierany jest na podstawie tego zgłoszonego przez przeglądarkę. Jeśli zgłoszony język nie zostanie odnaleziony, wybrany zostanie j. angielski. Jeśli użyta zostanie etykieta, której nie ma w wybranym języku, system sprobuje użyć etykiety z j. angielskiego(zostanie wygenerowane ostrzeżenie przez PHP, w środowisku produkcyjnym ostrzeżenia powinny być wyłączone), jeśli ta również nie zostanie odnaleziona, użyta zostanie nazwa etykiety.
+  * library
+   * adapters
+    * auth
+     * tutaj należy umieszczać swoje adaptery autoryzacji
+   * controllers
+     * tutaj należy umieszczać swoje kontrolery
+  * media
+   * tutaj należy umieszczać wszelkiego rodzaju media typu obrazki, filmy etc.
+  * xmls
+   * tutaj znajduje się definicja całej aplikacji
