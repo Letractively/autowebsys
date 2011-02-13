@@ -1,0 +1,27 @@
+<?= $this->doctype() ?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title><?= Translator::_('SYSTEM_TITLE') ?></title>
+    </head>
+    <body>
+        <form id="login" action="#" method="post">
+            <div style="position: relative; left: 40%; top: 15%; width: 300px;">
+                <fieldset>
+                    <legend><?= Translator::_('LOGINPAGE_LOGIN_FORM') ?></legend>
+                    <div style="float: none;">
+                        <label for="username" style="width: 50px"><?= Translator::_('LOGINPAGE_USERNAME') ?></label>
+                        <input type="text" id="username" name="username" style="width: 250px;" />
+                    </div>
+                    <div style="float: none;">
+                        <label for="password" style="width: 50px"><?= Translator::_('LOGINPAGE_PASSWORD') ?></label>
+                        <input type="password" id="password" name="password" style="width: 250px;" />
+                    </div>
+                    <div style="float: none;">
+                        <input type="submit" value="<?= Translator::_("LOGINPAGE_SUBMIT") ?>" />
+                    </div>
+                </fieldset>
+            </div>
+        </form>
+    </body>
+</html>
