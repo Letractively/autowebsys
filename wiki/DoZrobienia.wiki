@@ -1,0 +1,6 @@
+= Lista rzeczy do zrobienia =
+ * Dodać więcej struktur do prezentacji danych(np. drzewa)
+ * Walidatory dla wprowadzanych danych
+ * Możliwość definiowania formularzy
+ * Rozszerzenie struktury okien(pasek narzędzi, dzielenie okna itp.)
+ * Poprawienie mechanizmu autoryzacji
