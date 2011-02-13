@@ -1,0 +1,16 @@
+<?= $this->doctype() ?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title><?= Translator::_('TITLE') ?></title>
+    </head>
+    <body>
+        <? if ('development' == APPLICATION_ENV): ?>
+        <h1><?= $this->message ?></h1>
+        <h3><?= Translator::_('EXCEPTION_INFORMATION') ?></h3>
+        <p>
+            <b><?= Translator::_('REQUEST') ?></b> <?= $this->controller ?>/<?= $this->action ?>
+        </p>
+        <? endif ?>
+    </body>
+</html>
