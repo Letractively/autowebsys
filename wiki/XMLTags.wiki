@@ -1,0 +1,11 @@
+= Tagi XML =
+Wewnątrz plików XML można używać tagów, parsowanych przy każdym żądaniu klienta.
+
+== Lista tagów ==
+ * `{translator:<key>}` - Pobranie etykiety
+ * `{model:<structure>(<model_name>)}` - Wyrysowanie wybranej struktury dla wskazanego modelu danych.
+ * `{controller:Date.now}` - Wywołanie własnego kontrolera
+ * `{call:HelloWorld.hello(<params>)}` - Wywołanie własnej klasy PHP
+
+== Uwagi ==
+Zastąpić mechanizmy `call` i `controller` jednym, obecnie nie ma sensu tego dzielić.
