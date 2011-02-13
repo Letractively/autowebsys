@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<windows>
+    <window id="users_grid">
+        <title>{translator:WINDOW_USERS_GRID}</title>
+        <pos_x>100</pos_x>
+        <content>
+            <html>{model:grid(users_grid)}</html>
+        </content>
+    </window>
+    <window id="user_edit">
+        <title>{translator:WINDOW_USER_EDIT}</title>
+        <pos_y>0</pos_y>
+        <height>700</height>
+        <content>
+            <html>{model:form(user_edit_form)}</html>
+        </content>
+    </window>
+</windows>

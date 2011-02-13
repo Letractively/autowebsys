@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+    <data>
+        <datasource url="mysql:host=127.0.0.1;dbname=autowebsys" user="autowebsys" password="AUTO#web.sys" />
+        <queries>
+            <include path="queries.xml" />
+        </queries>
+    </data>
+    <parameters>
+        <param name="authAdapter">PublicAdapter</param>
+        <param name="cache">false</param>
+    </parameters>
+    <interface>
+        <main-menu>
+            <item id="users_group" text="{translator:MENU_USERS}" img="new.gif">
+                <item id="users_grid" text="{translator:MENU_USERS_GRID}" img="new.gif" />
+            </item>
+        </main-menu>
+    </interface>
+    <windows>
+        <include path="windows.xml" />
+    </windows>
+    <models>
+        <include path="models.xml" />
+    </models>
+</config>
