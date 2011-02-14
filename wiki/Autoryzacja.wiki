@@ -1,4 +1,7 @@
-Wymaga aktualizacji !
+= Aktualizacja =
+Poniższe rozwiązanie opiera się o plugin Zend'a i pozwala na definiowanie dostępu na poziomie kontrolera i akcji. W przypadku autowebsys'a jest to nieprzydatne i właściwie pozwala tylko na prostą autoryzacje 'wszystko albo nic'. Trzeba będzie opracować autoryzacje na poziomu okien i modeli.
+
+Poniższa część jest nieaktualna !
 
 = Proces autoryzacji =
 Autoryzacja i uwierzytelnianie jest realizowane niejako obok samej aplikacji, co pozwala na rozdzielenie procesu ustalania praw dostępu od tworzenia samej aplikacji. Domyślnie dostarczonych jest kilka adapterów do autoryzacji, jednak nic nie stoi na przeszkodzie, żeby stworzyć własne.
