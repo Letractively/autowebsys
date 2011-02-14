@@ -8,7 +8,9 @@ W celu eliminacji potrzeby parsowania plików XML dla każdego żądania, dane s
 
 * {{{application.interface.menu}}} - menu główne
 
-* {{{application.windows.<window_id>}}} - zawartość okna
+* {{{application.windows.description.<window_id>}}} - opis okna
+
+* {{{application.windows.content.<window_id>}}} - zawartość okna
 
 * {{{application.parameters.<param_key>}}} - parametr konfiguracyjny
 
