@@ -1,3 +1,9 @@
+var application;
+
+function init() {
+    application = new Application();
+}
+
 utils = {
     uid: 0,
     getFullHeight: function() {
@@ -20,7 +26,7 @@ utils = {
         }
     },
     onResize: function() {
-        application.controlls.desktop.setHeight((utils.getFullHeight() - 45) + 'px');
+        application.controlls.desktop.setHeight((utils.getFullHeight() - 60) + 'px');
     },
     generateUID: function() {
         this.uid += 1;
@@ -47,11 +53,8 @@ String.prototype.startsWith = function(str){
 }
 
 function Desktop() {
-    this.desktop = document.createElement('div');
-    this.desktop.id = 'desktop';
-    this.desktop.style.border = '1px solid gray';
+    this.desktop = document.getElementById('desktop');
     this.desktop.style.height = (utils.getFullHeight() - 45) + 'px';
-    document.body.appendChild(this.desktop);
     this.windowsManager = new dhtmlXWindows();
     this.windowsManager.enableAutoViewport(false);
     this.windowsManager.attachViewportTo(this.desktop.id);
@@ -128,13 +131,8 @@ Desktop.prototype.onClose = function(window) {
     application.controlls.desktop.windows[window.idd] = null;
 }
 
-function MainMenu(holder) {
-    this.start = document.createElement('div');
-    this.start.id = 'start';
-    this.start.style.width = '70px';
-    this.start.style.cssFloat = 'left';
-    holder.appendChild(this.start);
-    this.menu = new dhtmlXMenuObject(this.start.id, 'dhx_skyblue');
+function MainMenu() {
+    this.menu = new dhtmlXMenuObject('start', 'dhx_skyblue');
     this.menu.setIconsPath("/imgs/");
     this.menu.loadXML('/data/index/type/main-menu');
     this.menu.attachEvent("onClick", this.clickOnMenu);
@@ -149,11 +147,8 @@ MainMenu.prototype.clickOnMenu = function(id) {
     }
 }
 
-function Taskbar(holder) {
-    this.bar = document.createElement('div');
-    this.bar.id = 'taskbar';
-    holder.appendChild(this.bar);
-    this.taskbar = new dhtmlXToolbarObject(this.bar.id, 'dhx_skyblue');
+function Taskbar() {
+    this.taskbar = new dhtmlXToolbarObject('taskbar', 'dhx_skyblue');
     this.taskbar.setIconPath("/imgs/");
     this.taskbar.attachEvent('onClick', this.onClick);
 }
@@ -163,7 +158,9 @@ Taskbar.prototype.onClick = function(id) {
     var windows = application.controlls.desktop.windows;
     if(windows[id].isHidden()) {
         windows[id].show();
-        windows[id].park();
+        if(windows[id].isParked()) {
+            windows[id].park();
+        }
     } else if(windows[id].isOnTop()) {
         windows[id].hide();
     } else {
@@ -180,9 +177,6 @@ Taskbar.prototype.removeWindow = function(id) {
 }
 
 function Bar() {
-    this.taskbar = document.createElement('div');
-    this.taskbar.id = 'bar';
-    document.body.appendChild(this.taskbar);
     this.mainMenu = new MainMenu(this.taskbar);
     this.taskbar = new Taskbar(this.taskbar);
 }
