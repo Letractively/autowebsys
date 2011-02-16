@@ -3,6 +3,7 @@
     <window id="users_grid">
         <title>{translator:WINDOW_USERS_GRID}</title>
         <pos_x>100</pos_x>
+        <height>500</height>
         <content>
             <html>{model:grid(users_grid)}</html>
         </content>
