@@ -71,7 +71,7 @@ Desktop.prototype.createWindow = function(window) {
     this.windows[uid] = this.windowsManager.createWindow(uid, window.get('posX'), window.get('posY'), window.get('width'), window.get('height'));
     this.windows[uid].uid = this.uid;
     this.windows[uid].setText(window.get('title'));
-    this.windows[uid].windowURL = window.get('content');
+    this.windows[uid].windowURL = window.get('content') + '/wid/' + uid;
     this.windows[uid].attachURL(this.windows[uid].windowURL, true);
     this.windows[uid].attachEvent('onClose', this.onClose);
     this.windows[uid].attachEvent('onResizeFinish', this.onResizeFinish);
@@ -101,13 +101,16 @@ Desktop.prototype.toolbarAction = function(id) {
         case "delete":
             selectedId = this.grid.getSelectedRowId();
             if(selectedId != null) {
-                alert(this.grid.getSelectedRowId());
+                if(confirm(this.grid.confirmDelete)) {
+                dhtmlxAjax.getSync('/data/index/type/delete/name/' + this.grid.gName + '/id/' + selectedId);
+                this.grid.clearAndLoad(this.grid.url);
+                }
             } else {
                 alert(this.grid.notSelectedWarn);
             }
             break;
         case "refresh":
-            this.grid.updateFromXML(this.grid.url);
+            this.grid.clearAndLoad(this.grid.url);
             break;
         case "save":
             alert(this.grid);
@@ -129,6 +132,11 @@ Desktop.prototype.onClose = function(window) {
     window.hide();
     application.controlls.bar.taskbar.removeWindow(window.idd);
     application.controlls.desktop.windows[window.idd] = null;
+}
+
+Desktop.prototype.refreshWindow = function(wid) {
+    var window = application.controlls.desktop.windows[wid];
+    window.attachURL(window.windowURL, true);
 }
 
 function MainMenu() {
@@ -219,6 +227,7 @@ Communicator.prototype.getWindow = function(id) {
 function Application() {
     this.controlls = new Controlls();
     this.communicator = new Communicator();
+    this.register = new Register();
     utils.initGlobalEvents();
 }
 
@@ -241,3 +250,31 @@ Window.prototype.get = function(name) {
     return this.items[name];
 }
 
+function Register() {
+    this.register = Array();
+}
+
+Register.prototype.add = function(type, item) {
+    if(this.register[type] == undefined) {
+        this.register[type] = Array();
+    }
+    (this.register[type])[item.name] = item;
+}
+
+Register.prototype.get = function(type, name) {
+    return (this.register[type])[name];
+}
+
+/**
+ * Jak przy zamknieciu okna usunac tabelke z rejestru ?
+ */
+Register.prototype.del = function(type, id) {
+    (this.register[type])[id] = undefined;
+}
+
+Register.prototype.refresh = function(type) {
+    for(var item in this.register[type]) {
+        var grid = (this.register[type])[item];
+        grid.clearAndLoad(grid.url);
+    }
+}

@@ -76,13 +76,13 @@ class STParser {
         $model = ApplicationManager::getCachedValue(ApplicationManager::DATA_MODEL_SQL, $name);
         switch($type) {
             case "grid":
-                $out .= ModelRenderer::renderGrid($model);
+                $out .= ModelRenderer::renderGrid($model, $params['wid']);
                 break;
             case "form":
                 if(isset($params['id'])) {
-                    $out .= ModelRenderer::renderForm($model, $params['id']);
+                    $out .= ModelRenderer::renderForm($model, $params['wid'], $params['id']);
                 } else {
-                    $out .= ModelRenderer::renderForm($model);
+                    $out .= ModelRenderer::renderForm($model, $params['wid']);
                 }
                 break;
             default:

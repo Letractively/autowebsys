@@ -36,6 +36,7 @@
         </taskbar>
         <internationalization>
             <not_selected_warn>{translator:GRID_NOT_SELECTED_WARN}</not_selected_warn>
+            <confirm_delete>{translator:GRID_CONFIRM_DELETE}</confirm_delete>
         </internationalization>
     </model>
     <model>
@@ -69,5 +70,6 @@
                 <label>{translator:FORM_USER_LABEL_SUBMIT}</label>
             </input>
         </form>
+        <onSave>application.register.refresh('users_grid');</onSave>
     </model>
 </models>

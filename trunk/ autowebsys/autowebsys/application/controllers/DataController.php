@@ -41,7 +41,16 @@ class DataController extends Zend_Controller_Action {
                 $conn->enable_log(Logger::getLogPath() . "dhtmlx.log");
                 $conn->render_sql($sql, $xmlModel->sql->id->__toString(), $xmlModel->sql->columns->__toString(), $xmlModel->sql->hidden_columns->__toString(), $xmlModel->sql->parent_id->__toString());
                 break;
+            case "delete":
+                $model = ApplicationManager::getCachedValue(ApplicationManager::DATA_MODEL_SQL, $name);
+                $xmlModel = simplexml_load_string($model);
+                $id = $this->_getParam("id", 0);
+                $idName = $xmlModel->sql->id;
+                $values = array("$idName" => $id);
+                DBManager::execute($xmlModel->sql->delete, $values);
+                break;
             default:
+                Logger::warning(self::$log_type, "Unknown type: " . $type);
         }
     }
 

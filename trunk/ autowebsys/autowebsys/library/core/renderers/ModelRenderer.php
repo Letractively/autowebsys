@@ -4,8 +4,9 @@ require_once('core/renderers/WindowRenderer.php');
 require_once('core/STParser.php');
 
 class ModelRenderer {
+    private static $log_type = "MODEL_RENDERER";
 
-    public static function renderGrid($grid) {
+    public static function renderGrid($grid, $wid) {
         $xmlGrid = simplexml_load_string($grid);
         $uid = WindowRenderer::getUID();
         $gName = $xmlGrid->name;
@@ -63,18 +64,30 @@ class ModelRenderer {
         } else {
             $out .= "$gridName.notSelectedWarn = 'Select row first!';";
         }
+        if (isset($xmlGrid->internationalization->confirm_delete)) {
+            $warn = STParser::parse($xmlGrid->internationalization->confirm_delete);
+            $out .= "$gridName.confirmDelete = '$warn';";
+        } else {
+            $out .= "$gridName.confirmDelete = 'Are you sure ?';";
+        }
+        $out .= "$gridName.name = '$gridName';";
+        $out .= "$gridName.gName = '$gName';";
+        $out .= "application.register.add('$gName', $gridName);";
         $out .= "</script>";
         return $out;
     }
 
-    public static function renderForm($form, $id = 0) {
+    public static function renderForm($form, $wid, $id = 0) {
+        $out = "";
         $xmlForm = simplexml_load_string($form);
+        Logger::notice(self::$log_type, "Rendering form: " . $xmlForm->name . ", id=" . $id);
         if ($xmlForm->type == "sql") {
-            return ModelRenderer::renderSQLForm($xmlForm, $id);
+            $out .= ModelRenderer::renderSQLForm($xmlForm, $id, $wid, $xmlForm->onSave);
         }
+        return $out;
     }
 
-    private static function renderSQLForm($form, $id) {
+    private static function renderSQLForm($form, $id, $wid, $js = null) {
         $out = "";
         $uid = WindowRenderer::getUID();
         $gName = $form->name;
@@ -92,16 +105,25 @@ class ModelRenderer {
                     $label = STParser::parse($input->label->__toString());
                     $type = $input->type->__toString();
                     $out .= "<div>";
-                        $out .= "<label>$label: </label><input class=\"dhxlist_txt_textarea\" bind=\"$bind\" type=\"$type\" />";
+                    $out .= "<label>$label: </label><input class=\"dhxlist_txt_textarea\" bind=\"$bind\" type=\"$type\" />";
                     $out.= "</div>";
             }
         }
         $out .= "</form>";
         $out .= "<script type=\"text/javascript\">";
         $out .= "var $formName = new dhtmlXForm('$formName');";
+        $out .= "$formName.name = '$formName';";
+        $out .= "application.register.add('$gName', $formName);";
         $out .= "$formName.load('/data/index/type/model/subtype/form/name/$gName?id=$id');";
         $out .= "var dp = new dataProcessor('/data/processor/name/$gName/type/form?gr_id=$id');";
         $out .= "dp.init($formName);";
+        if (isset($js)) {
+            $out .= "dp.attachEvent('onAfterUpdate', function(sid, action, tid, xml_node){";
+            $out .= "   $js;";
+            $out .= "   application.controlls.desktop.refreshWindow($wid);";
+            $out .= "   return true;";
+            $out .= "});";
+        }
         $out .= "</script>";
         return $out;
     }
