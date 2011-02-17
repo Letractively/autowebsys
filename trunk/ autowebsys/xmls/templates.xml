@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <temaplate>
+        <name>user_form_template</name>
+        <html>
+            <div>
+                <fieldset>
+                    <legend>{translator:USER_FORM_TITLE}</legend>
+                    <table>
+                        <tr>
+                            <td style="width: 150px">{translator:FORM_USER_LABEL_EXTENSION}</td>
+                            <td style="width: 100%;">
+                                <input id="user_form_extension" type="text" bind="extension" style="width: 100%;" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 150px">{translator:FORM_USER_LABEL_USERNAME}</td>
+                            <td style="width: 100%;">
+                                <input id="user_form_username" type="text" bind="username" style="width: 100%;" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 150px">{translator:FORM_USER_LABEL_BALANCE}</td>
+                            <td style="width: 100%;">
+                                <input id="user_form_balance" type="text" bind="balance" style="width: 100%;" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="width: 100%;">
+                                <input id="user_form_button" type="button" command="save" value="{translator:FORM_USER_LABEL_SUBMIT}" />
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+            </div>
+        </html>
+    </temaplate>
+</templates>
