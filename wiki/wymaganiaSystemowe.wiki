@@ -1,6 +1,6 @@
 = Wymagania systemowe =
 
- * Serwer WWW - autowebsys przystosowany jest do [http://www.apache.org/ Apache'a]. Do poprawnej obsługi systemu wymagany jest virtual host wskazujący na katalog ht_root/autowebsys/public/ - znajduje się tam plik .htaccess z konfiguracją modułu Rewrite Engine. Przy konfiguracji virtual hosta należy pamietać o opcji 'AllowOverride All'
+ * Serwer WWW - autowebsys przystosowany jest do [http://www.apache.org/ Apache'a]. Do poprawnej obsługi systemu wymagany jest virtual host wskazujący na katalog ht_root/autowebsys/public/ - znajduje się tam plik .htaccess z konfiguracją modułu Rewrite Engine. Przy konfiguracji virtual hosta należy pamietać o opcji AllowOverride All
  * Serwer [http://memcached.org/ Memcache] - wymagany do cachowania xml, serwer musi działać na standardowym porcie(11211)
  * [http://www.php.net/ PHP] w wersj 5.3.5
  * Biblioteki PHP do obsługi [http://pecl.php.net/package/memcache Memcache'a]
