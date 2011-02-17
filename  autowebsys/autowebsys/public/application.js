@@ -139,6 +139,15 @@ Desktop.prototype.refreshWindow = function(wid) {
     window.attachURL(window.windowURL, true);
 }
 
+Desktop.prototype.getWindowURL = function(wid) {
+    return (application.controlls.desktop.windows[wid]).windowURL;
+}
+
+Desktop.prototype.setWindowURL = function(wid, url) {
+    (application.controlls.desktop.windows[wid]).windowURL = url;
+    this.refreshWindow(wid);
+}
+
 function MainMenu() {
     this.menu = new dhtmlXMenuObject('start', 'dhx_skyblue');
     this.menu.setIconsPath("/imgs/");

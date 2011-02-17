@@ -1,130 +1,209 @@
 <?php
 
+require_once('core/renderers/structures/Grid.php');
+require_once('core/renderers/structures/Form.php');
 require_once('core/renderers/WindowRenderer.php');
 require_once('core/STParser.php');
 
 class ModelRenderer {
+
     private static $log_type = "MODEL_RENDERER";
 
-    public static function renderGrid($grid, $wid) {
-        $xmlGrid = simplexml_load_string($grid);
-        $uid = WindowRenderer::getUID();
-        $gName = $xmlGrid->name;
-        $name = $gName . $uid;
+    private static function buildDiv($id, $style) {
+        return "<div id=\"$id\" style=\"$style\"></div>";
+    }
+
+    private static function openScript() {
+        return "<script type=\"text/javascript\">";
+    }
+
+    private static function closeScript() {
+        return "</script>";
+    }
+
+    private static function buildTaskbarDiv($grid) {
+        return (isset($grid->xml->taskbar) ? self::buildDiv($grid->taskbarName, "width: 100%; height: 30px;") : "");
+    }
+
+    private static function addButtons($toolbarName, $xml) {
         $out = "";
-        if (isset($xmlGrid->taskbar)) {
-            $out .= "<div id=\"taskbar_$name\" style=\"width: 100%; height: 30px;\"></div>";
-        }
-        $out .= "<div id=\"$name\" style=\"width: 100%; height: 100%;\"></div>";
-        $out .= "<script type=\"text/javascript\">";
-        if (isset($xmlGrid->taskbar)) {
-            $toolbarName = "toolbar" . $uid;
-            $out .= "var $toolbarName = new dhtmlXToolbarObject('taskbar_$name');";
-            $out .= "$toolbarName.attachEvent('onClick', application.controlls.desktop.toolbarAction);";
-            $out .= "$toolbarName.setIconsPath('/imgs/');";
-            if (isset($xmlGrid->taskbar->add)) {
-                $window = $xmlGrid->taskbar->add->window;
-                $out .= "$toolbarName.addWindow = '$window';";
-            }
-            if (isset($xmlGrid->taskbar->edit)) {
-                $window = $xmlGrid->taskbar->edit->window;
-                $out .= "$toolbarName.editWindow = '$window';";
-            }
-            foreach ($xmlGrid->taskbar->children() as $button) {
-                $buttonName = $button->getName();
-                switch ($buttonName) {
-                    case "separator":
-                        $out .= "$toolbarName.addSeparator('separator');";
-                        break;
-                    default:
-                        $label = STParser::parse($button->label);
-                        $out .= "$toolbarName.addButton('$buttonName', null, '$label', 'new.gif', 'new.gif');";
-                }
+        foreach ($xml->children() as $button) {
+            $buttonName = $button->getName();
+            switch ($buttonName) {
+                case "separator":
+                    $out .= "$toolbarName.addSeparator('separator');";
+                    break;
+                default:
+                    $label = STParser::parse($button->label);
+                    $out .= "$toolbarName.addButton('$buttonName', null, '$label', 'new.gif', 'new.gif');";
+                    if (isset($button->window)) {
+                        $window = $button->window;
+                        $out .= "$toolbarName.$buttonName" . "Window = '$window';";
+                    }
             }
         }
-        $gridName = "grid" . $uid;
-        $out .= "var $gridName = new dhtmlXGridObject(\"" . $name . "\");";
-        if (isset($xmlGrid->taskbar)) {
-            $out .= "$toolbarName.grid = $gridName;";
-        }
-        $processorName = "processor" . $uid;
-        $out .= "var $processorName = new dataProcessor('/data/processor/name/$gName/type/grid');";
-        $out .= "$processorName.init($gridName);";
-        foreach ($xmlGrid->js->children() as $js) {
+        return $out;
+    }
+
+    private static function buildTaskbar($xml, $taskbarName, $type) {
+        $out = "";
+        $out .= "var $taskbarName = new dhtmlXToolbarObject('$taskbarName');";
+        $out .= "$taskbarName.attachEvent('onClick', application.controlls.desktop.toolbarAction);";
+        $out .= "$taskbarName.setIconsPath('/imgs/');";
+        $out .= self::addButtons($taskbarName, $xml);
+        return $out;
+    }
+
+    private static function buildGrid($name) {
+        return "var $name = new dhtmlXGridObject('$name');";
+    }
+
+    private static function pinGridToTaskbar($grid, $taskbarName, $gridName) {
+        return (isset($grid->xml->taskbar) ? "$taskbarName.grid = $gridName;" : "");
+    }
+
+    private static function buildGridProcessor($processorName, $gridType, $gridName) {
+        return "var $processorName = new dataProcessor('/data/processor/name/$gridType/type/grid'); $processorName.init($gridName);";
+    }
+
+    private static function parseGridJS($gridName, $js) {
+        $out = "";
+        foreach ($js->children() as $js) {
             $parsedValue = STParser::parse($js->__toString());
             $tagName = $js->getName();
             $out .= "$gridName.$tagName('$parsedValue');";
         }
+        return $out;
+    }
+
+    private static function initGrid($gridName, $gridType) {
+        $out = "";
         $out .= "$gridName.init();";
-        $out .= "$gridName.load(\"/data/index/type/model/subtype/grid/name/$gName\");";
-        $out .= "$gridName.url = \"/data/index/type/model/subtype/grid/name/$gName\";";
-        if (isset($xmlGrid->internationalization->not_selected_warn)) {
-            $warn = STParser::parse($xmlGrid->internationalization->not_selected_warn);
-            $out .= "$gridName.notSelectedWarn = '$warn';";
-        } else {
-            $out .= "$gridName.notSelectedWarn = 'Select row first!';";
-        }
-        if (isset($xmlGrid->internationalization->confirm_delete)) {
-            $warn = STParser::parse($xmlGrid->internationalization->confirm_delete);
-            $out .= "$gridName.confirmDelete = '$warn';";
-        } else {
-            $out .= "$gridName.confirmDelete = 'Are you sure ?';";
-        }
-        $out .= "$gridName.name = '$gridName';";
-        $out .= "$gridName.gName = '$gName';";
-        $out .= "application.register.add('$gName', $gridName);";
-        $out .= "</script>";
+        $out .= "$gridName.url = '/data/index/type/model/subtype/grid/name/$gridType';";
+        $out .= "$gridName.load($gridName.url);";
         return $out;
     }
 
-    public static function renderForm($form, $wid, $id = 0) {
+    private static function addMessage($xml, $gridName, $messageTag, $messageVar, $defaultMessage) {
+        return (isset($xml->$messageTag) ? "$gridName.$messageVar = '" . STParser::parse($xml->$messageTag) . "';" : "$gridName.$messageVar = '$defaultMessage';");
+    }
+
+    private static function addMessages($xml, $gridName) {
+        return self::addMessage($xml, $gridName, "not_selected_warn", "notSelectedWarn", "Select row first!")
+        . self::addMessage($xml, $gridName, "confirm_delete", "confirmDelete", "Are you sure ?");
+    }
+
+    private static function setNames($gridName, $gridType) {
+        return "$gridName.name = '$gridName';" . "$gridName.gName = '$gridType';";
+    }
+
+    private static function register($type, $object) {
+        return "application.register.add('$type', $object);";
+    }
+
+    public static function renderSQLGrid($xml, $wid) {
+        $grid = new Grid($xml);
         $out = "";
-        $xmlForm = simplexml_load_string($form);
-        Logger::notice(self::$log_type, "Rendering form: " . $xmlForm->name . ", id=" . $id);
-        if ($xmlForm->type == "sql") {
-            $out .= ModelRenderer::renderSQLForm($xmlForm, $id, $wid, $xmlForm->onSave);
-        }
+        $out .= self::buildTaskbarDiv($grid);
+        $out .= self::buildDiv($grid->name, "width: 100%; height: 100%;");
+        $out .= self::openScript();
+        $out .= self::buildTaskbar($grid->xml->taskbar, $grid->taskbarName, $grid->type);
+        $out .= self::buildGrid($grid->name);
+        $out .= self::pinGridToTaskbar($grid, $grid->taskbarName, $grid->name);
+        $out .= self::buildGridProcessor($grid->processorName, $grid->type, $grid->name);
+        $out .= self::parseGridJS($grid->name, $grid->xml->js);
+        $out .= self::initGrid($grid->name, $grid->type);
+        $out .= self::addMessages($grid->xml->internationalization, $grid->name);
+        $out .= self::setNames($grid->name, $grid->type);
+        $out .= self::register($grid->type, $grid->name);
+        $out .= self::closeScript();
         return $out;
     }
 
-    private static function renderSQLForm($form, $id, $wid, $js = null) {
-        $out = "";
-        $uid = WindowRenderer::getUID();
-        $gName = $form->name;
-        $formName = $gName . $uid;
-        $IdName = $form->sql->id;
-        $out .= "<form action=\"\" method=\"post\" accept-charset=\"utf-8\" id=\"$formName\">";
-        foreach ($form->form->children() as $input) {
-            switch ($input->type) {
-                case "submit":
-                    $label = STParser::parse($input->label);
-                    $out .= "<td><input type=\"button\" command=\"save\" value=\"$label\" /></td>";
-                    break;
-                default:
-                    $bind = $input->bind->__toString();
-                    $label = STParser::parse($input->label->__toString());
-                    $type = $input->type->__toString();
-                    $out .= "<div>";
-                    $out .= "<label>$label: </label><input class=\"dhxlist_txt_textarea\" bind=\"$bind\" type=\"$type\" />";
-                    $out.= "</div>";
-            }
+    public static function renderGrid($xml, $wid) {
+        $grid = new Grid($xml);
+        Logger::notice(self::$log_type, "Rendering grid: " . $grid->type);
+        if ($grid->xml->type == "sql") {
+            return self::renderSQLGrid($xml, $wid);
         }
-        $out .= "</form>";
-        $out .= "<script type=\"text/javascript\">";
-        $out .= "var $formName = new dhtmlXForm('$formName');";
-        $out .= "$formName.name = '$formName';";
-        $out .= "application.register.add('$gName', $formName);";
-        $out .= "$formName.load('/data/index/type/model/subtype/form/name/$gName?id=$id');";
-        $out .= "var dp = new dataProcessor('/data/processor/name/$gName/type/form?gr_id=$id');";
-        $out .= "dp.init($formName);";
+    }
+
+    private static function openForm($name) {
+        return "<form action=\"\" method=\"post\" accept-charset=\"utf-8\" id=\"$name\">";
+    }
+
+    private static function closeForm() {
+        return "</form>";
+    }
+
+    private static function createForm($name) {
+        return "var $name = new dhtmlXForm('$name');$name.name = '$name';";
+    }
+
+    private static function loadFormData($name, $type, $id) {
+        return "$name.load('/data/index/type/model/subtype/form/name/$type?id=$id');";
+    }
+
+    private static function buildFormProcessor($processorName, $formName, $type, $id) {
+        return "var $processorName = new dataProcessor('/data/processor/name/$type/type/form?gr_id=$id');$processorName.init($formName);";
+    }
+
+    private static function openFormEvent($processorName) {
+        return "$processorName.attachEvent('onAfterUpdate', function(sid, action, tid, xml_node){";
+    }
+
+    private static function closeFormEvent() {
+        return "return true;});";
+    }
+
+    private static function parseFormJS($js) {
         if (isset($js)) {
-            $out .= "dp.attachEvent('onAfterUpdate', function(sid, action, tid, xml_node){";
-            $out .= "   $js;";
-            $out .= "   application.controlls.desktop.refreshWindow($wid);";
-            $out .= "   return true;";
-            $out .= "});";
+            return "$js;";
         }
-        $out .= "</script>";
+        return "";
+    }
+
+    private static function refreshForm($wid) {
+        $out = "";
+        $out .= "var url = application.controlls.desktop.getWindowURL($wid);";
+        $out .= "if(url.lastIndexOf('=') == -1) {";
+        $out .= "   var newURL = url + '?id=' + xml_node.getAttribute('sid');";
+        $out .= "   application.controlls.desktop.setWindowURL($wid, newURL);";
+        $out .= "} else {";
+        $out .= "   application.controlls.desktop.refreshWindow($wid);";
+        $out .= "}";
+        return $out;
+    }
+
+    private static function renderInputs($xml) {
+        $string = $xml->asXML();
+        $string = substr($string, 6, count($string) - 8);
+        return STParser::parse($string);
+    }
+
+    public static function renderForm($xml, $wid, $id = 0) {
+        $form = new Form($xml);
+        Logger::notice(self::$log_type, "Rendering form: " . $form->name . ", id=" . $id);
+        if ($form->xml->type == "sql") {
+            return ModelRenderer::renderSQLForm($form, $id, $wid);
+        }
+    }
+
+    private static function renderSQLForm($form, $id, $wid) {
+        $out = "";
+        $out .= self::openForm($form->name);
+        $out .= self::renderInputs($form->template->html);
+        $out .= self::closeForm();
+        $out .= self::openScript();
+        $out .= self::createForm($form->name);
+        $out .= self::register($form->type, $form->name);
+        $out .= self::loadFormData($form->name, $form->type, $id);
+        $out .= self::buildFormProcessor($form->processorName, $form->name, $form->type, $id);
+        $out .= self::openFormEvent($form->processorName);
+        $out .= self::parseFormJS($form->xml->onSave);
+        $out .= self::refreshForm($wid);
+        $out .= self::closeFormEvent();
+        $out .= self::closeScript();
         return $out;
     }
 

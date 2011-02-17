@@ -18,6 +18,7 @@ class ApplicationManager {
     const STATUS = "application.status";
     const CACHE = "application.parameters.cache";
     const DATA_MODEL_SQL = "application.models.";
+    const DATA_TEMPLATE = "application.templates.";
 
     public static function initApplication() {
         date_default_timezone_set('Europe/Warsaw');

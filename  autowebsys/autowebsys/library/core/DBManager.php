@@ -20,6 +20,14 @@ class DBManager {
         $statement->execute();
         Logger::notice(self::$log_type, "SQL executed: ". $statement->queryString);
     }
+    
+    public static function insert($queryName, $parameters = array()) {
+        self::getConnector()->beginTransaction();
+        self::execute($queryName, $parameters);
+        $id = self::getConnector()->lastInsertId();
+        self::getConnector()->commit();
+        return $id;
+    }
 
     public static function getConnector() {
         if(self::$dbh == null) {

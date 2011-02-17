@@ -29,10 +29,19 @@ class XMLParser {
                 'models' => array(
                         'model' => 'handleModel',
                 ),
+                'templates' => array(
+                        'temaplate' => 'handleTemplate',
+                ),
         ));
         return true;
     }
 
+    private static function handleTemplate($xml) {
+        $template = array();
+        self::$memcache->set(ApplicationManager::DATA_TEMPLATE . $xml->name, $xml->asXML());
+        Logger::notice(self::$log_type, "Template " . $xml->name. " cached");
+    }
+    
     private static function handleModel($xml) {
         $model = array();
         self::$memcache->set(ApplicationManager::DATA_MODEL_SQL . $xml->name, $xml->asXML());

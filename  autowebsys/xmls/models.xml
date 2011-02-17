@@ -2,6 +2,7 @@
 <models>
     <model>
         <name>users_grid</name>
+        <type>sql</type>
         <sql>
             <select>user_select</select>
             <update>user_update</update>
@@ -42,6 +43,7 @@
     <model>
         <name>user_edit_form</name>
         <type>sql</type>
+        <template>user_form_template</template>
         <sql>
             <insert>user_insert</insert>
             <select>user_select</select>
@@ -49,27 +51,6 @@
             <id>id</id>
             <columns>extension,username,balance</columns>
         </sql>
-        <form>
-            <input>
-                <type>text</type>
-                <bind>extension</bind>
-                <label>{translator:FORM_USER_LABEL_EXTENSION}</label>
-            </input>
-            <input>
-                <type>text</type>
-                <bind>username</bind>
-                <label>{translator:FORM_USER_LABEL_USERNAME}</label>
-            </input>
-            <input>
-                <type>text</type>
-                <bind>balance</bind>
-                <label>{translator:FORM_USER_LABEL_BALANCE}</label>
-            </input>
-            <input>
-                <type>submit</type>
-                <label>{translator:FORM_USER_LABEL_SUBMIT}</label>
-            </input>
-        </form>
         <onSave>application.register.refresh('users_grid');</onSave>
     </model>
 </models>

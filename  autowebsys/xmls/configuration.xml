@@ -9,7 +9,7 @@
     </data>
     <parameters>
         <param name="authAdapter">PublicAdapter</param>
-        <param name="cache">false</param>
+        <param name="cache">true</param>
     </parameters>
     <interface>
         <main-menu>
@@ -24,4 +24,7 @@
     <models>
         <include path="models.xml" />
     </models>
+    <templates>
+        <include path="templates.xml" />
+    </templates>
 </config>

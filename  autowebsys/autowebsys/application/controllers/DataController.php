@@ -75,7 +75,7 @@ class DataController extends Zend_Controller_Action {
         switch ($state) {
             case "inserted":
                 Logger::notice(self::$log_type, "Persisting data: " . implode(", ", $values) . " with sql: " . $xmlModel->sql->insert);
-                DBManager::execute($xmlModel->sql->insert, $values);
+                $idValue = DBManager::insert($xmlModel->sql->insert, $values);
                 break;
             case "updated":
                 Logger::notice(self::$log_type, "Persisting data: " . implode(", ", $values) . " with sql: " . $xmlModel->sql->update);
