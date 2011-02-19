@@ -34,20 +34,6 @@ utils = {
     }
 }
 
-validators = {
-    minLength: function(string, length) {
-        return (string.length < length) ? false : true;
-    },
-
-    maxLength: function(string, length) {
-        return (string.length > length) ? false : true;
-    },
-
-    isNumber: function(string) {
-        return string.isNumber();
-    }
-}
-
 String.prototype.startsWith = function(str){
     return (this.indexOf(str) === 0);
 }
@@ -102,8 +88,7 @@ Desktop.prototype.toolbarAction = function(id) {
             selectedId = this.grid.getSelectedRowId();
             if(selectedId != null) {
                 if(confirm(this.grid.confirmDelete)) {
-                dhtmlxAjax.getSync('/data/index/type/delete/name/' + this.grid.gName + '/id/' + selectedId);
-                this.grid.clearAndLoad(this.grid.url);
+                    this.grid.deleteSelectedRows();
                 }
             } else {
                 alert(this.grid.notSelectedWarn);

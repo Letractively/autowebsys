@@ -45,12 +45,14 @@ class ModelRenderer {
         return $out;
     }
 
-    private static function buildTaskbar($xml, $taskbarName, $type) {
+    private static function buildTaskbar($grid, $taskbarName, $type) {
         $out = "";
-        $out .= "var $taskbarName = new dhtmlXToolbarObject('$taskbarName');";
-        $out .= "$taskbarName.attachEvent('onClick', application.controlls.desktop.toolbarAction);";
-        $out .= "$taskbarName.setIconsPath('/imgs/');";
-        $out .= self::addButtons($taskbarName, $xml);
+        if (isset($grid->xml->taskbar)) {
+            $out .= "var $taskbarName = new dhtmlXToolbarObject('$taskbarName');";
+            $out .= "$taskbarName.attachEvent('onClick', application.controlls.desktop.toolbarAction);";
+            $out .= "$taskbarName.setIconsPath('/imgs/');";
+            $out .= self::addButtons($taskbarName, $grid->xml->taskbar);
+        }
         return $out;
     }
 
@@ -63,7 +65,7 @@ class ModelRenderer {
     }
 
     private static function buildGridProcessor($processorName, $gridType, $gridName) {
-        return "var $processorName = new dataProcessor('/data/processor/name/$gridType/type/grid'); $processorName.init($gridName);";
+        return "var $processorName = new dataProcessor('/data/processor/name/$gridType/type/grid/subtype/grid'); $processorName.init($gridName);";
     }
 
     private static function parseGridJS($gridName, $js) {
@@ -107,7 +109,7 @@ class ModelRenderer {
         $out .= self::buildTaskbarDiv($grid);
         $out .= self::buildDiv($grid->name, "width: 100%; height: 100%;");
         $out .= self::openScript();
-        $out .= self::buildTaskbar($grid->xml->taskbar, $grid->taskbarName, $grid->type);
+        $out .= self::buildTaskbar($grid, $grid->taskbarName, $grid->type);
         $out .= self::buildGrid($grid->name);
         $out .= self::pinGridToTaskbar($grid, $grid->taskbarName, $grid->name);
         $out .= self::buildGridProcessor($grid->processorName, $grid->type, $grid->name);
@@ -123,8 +125,13 @@ class ModelRenderer {
     public static function renderGrid($xml, $wid) {
         $grid = new Grid($xml);
         Logger::notice(self::$log_type, "Rendering grid: " . $grid->type);
-        if ($grid->xml->type == "sql") {
-            return self::renderSQLGrid($xml, $wid);
+        switch ($grid->xml->type) {
+            case "cc":
+            case "sql":
+                return self::renderSQLGrid($xml, $wid);
+                break;
+            default:
+                Logger::warning(self::$log_type, "Unknown model type: " . $grid->xml->type);
         }
     }
 
@@ -145,11 +152,15 @@ class ModelRenderer {
     }
 
     private static function buildFormProcessor($processorName, $formName, $type, $id) {
-        return "var $processorName = new dataProcessor('/data/processor/name/$type/type/form?gr_id=$id');$processorName.init($formName);";
+        return "var $processorName = new dataProcessor('/data/processor/name/$type/type/form/subtype/form');$processorName.init($formName);";
     }
 
     private static function openFormEvent($processorName) {
         return "$processorName.attachEvent('onAfterUpdate', function(sid, action, tid, xml_node){";
+    }
+
+    private static function addId($idName, $idValue) {
+        return "<input type=\"hidden\" id=\"$idName\" value=\"$idValue\" bind=\"$idName\" />";
     }
 
     private static function closeFormEvent() {
@@ -192,6 +203,7 @@ class ModelRenderer {
     private static function renderSQLForm($form, $id, $wid) {
         $out = "";
         $out .= self::openForm($form->name);
+        $out .= self::addId($form->xml->sql->id, $id);
         $out .= self::renderInputs($form->template->html);
         $out .= self::closeForm();
         $out .= self::openScript();
@@ -208,5 +220,4 @@ class ModelRenderer {
     }
 
 }
-
 ?>

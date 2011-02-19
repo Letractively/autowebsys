@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
+    <query name="user_select_by_id">SELECT * FROM user WHERE id = :id</query>
     <query name="user_select">SELECT * FROM user</query>
     <query name="user_update">UPDATE user SET extension = :extension, username = :username, balance = :balance WHERE id = :id</query>
     <query name="user_delete">DELETE FROM user WHERE id = :id</query>
