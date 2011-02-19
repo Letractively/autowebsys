@@ -3,9 +3,8 @@
 require_once('core/ApplicationManager.php');
 require_once('core/DBManager.php');
 require_once('core/Logger.php');
-require_once('connectors/grid_connector.php');
-require_once('connectors/form_connector.php');
-require_once('connectors/db_pdo.php');
+require_once('core/renderers/MainMenuRenderer.php');
+require_once('core/renderers/WindowRenderer.php');
 
 class DataController extends Zend_Controller_Action {
 
@@ -18,36 +17,19 @@ class DataController extends Zend_Controller_Action {
 
         switch ($type) {
             case "main-menu":
-                header('Content-type: text/xml');
-                echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-                $menu = ApplicationManager::getCachedValue(ApplicationManager::INTERFACE_MAINMENU);
-                echo STParser::parse($menu);
+                MainMenuRenderer::generateXML();
                 break;
             case "window-description":
-                header('Content-type: text/xml');
-                echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-                $window = ApplicationManager::getCachedValue(ApplicationManager::WINDOW_DESCRIPTION, $name);
-                echo STParser::parse($window);
+                WindowRenderer::generateXML($name);
                 break;
             case "window-content":
                 $window = ApplicationManager::getCachedValue(ApplicationManager::WINDOW_CONTENT, $name);
                 echo STParser::parse($window, $this->_getAllParams());
                 break;
             case "model":
-                $conn = $this->getConnection($subType);
                 $model = ApplicationManager::getCachedValue(ApplicationManager::DATA_MODEL_SQL, $name);
                 $xmlModel = simplexml_load_string($model);
-                $sql = ApplicationManager::getCachedValue(ApplicationManager::DB_QUERY, $xmlModel->sql->select->__toString());
-                $conn->enable_log(Logger::getLogPath() . "dhtmlx.log");
-                $conn->render_sql($sql, $xmlModel->sql->id->__toString(), $xmlModel->sql->columns->__toString(), $xmlModel->sql->hidden_columns->__toString(), $xmlModel->sql->parent_id->__toString());
-                break;
-            case "delete":
-                $model = ApplicationManager::getCachedValue(ApplicationManager::DATA_MODEL_SQL, $name);
-                $xmlModel = simplexml_load_string($model);
-                $id = $this->_getParam("id", 0);
-                $idName = $xmlModel->sql->id;
-                $values = array("$idName" => $id);
-                DBManager::execute($xmlModel->sql->delete, $values);
+                $this->renderObject($xmlModel);
                 break;
             default:
                 Logger::warning(self::$log_type, "Unknown type: " . $type);
@@ -57,73 +39,73 @@ class DataController extends Zend_Controller_Action {
     public function processorAction() {
         $name = $this->_getParam("name");
         $type = $this->_getParam("type");
-        $idValue = $this->_getParam("gr_id", null);
         Logger::notice(self::$log_type, "Processing model: " . $name);
         $model = ApplicationManager::getCachedValue(ApplicationManager::DATA_MODEL_SQL, $name);
         $xmlModel = simplexml_load_string($model);
-        $values = $this->getValue($type, $xmlModel, $idValue);
-        $state = "";
-        if($idValue == 0) {
-            $state = "inserted";
-        } else {
-            if ($this->_getParam("!nativeeditor_status", "updated") == "inserted") {
-                $state = "updated";
-            } else {
-                $state = $this->_getParam("!nativeeditor_status", "updated");
-            }
-        }
-        switch ($state) {
-            case "inserted":
-                Logger::notice(self::$log_type, "Persisting data: " . implode(", ", $values) . " with sql: " . $xmlModel->sql->insert);
-                $idValue = DBManager::insert($xmlModel->sql->insert, $values);
-                break;
-            case "updated":
-                Logger::notice(self::$log_type, "Persisting data: " . implode(", ", $values) . " with sql: " . $xmlModel->sql->update);
-                DBManager::execute($xmlModel->sql->update, $values);
-                break;
-            case "deleted":
-                Logger::notice(self::$log_type, "Persisting data: " . implode(", ", $values) . " with sql: " . $xmlModel->sql->delete);
-                DBManager::execute($xmlModel->sql->delete, $values);
-                break;
-            default:
-                Logger::warning(self::$log_type, "Unknown state: " . $state);
-        }
+        $connectorObject = $this->getConnectorObject($xmlModel);
+        $requestId = $this->_getParam("ids", null);
+        $idName = $connectorObject->getIdName($xmlModel);
+        $values = $this->getValues($type, $xmlModel, $connectorObject, $requestId);
+        $state = $this->_getParam($requestId . "_!nativeeditor_status");
+        $idValue = $connectorObject->$state($xmlModel, $values);
         header('Content-type: text/xml');
         echo "<?xml version=\"1.0\"?>";
-        echo "<data><action type=\"$state\" sid=\"$idValue\" tid=\"id\" /></data>";
+        echo "<data><action type=\"$state\" sid=\"" . $idValue . "\" tid=\"id\" /></data>";
     }
 
-    private function getConnection($subType) {
-        switch ($subType) {
-            case "grid":
-                return new GridConnector(DBManager::getConnector(), "PDO");
+    private function renderObject($xml) {
+        $instance = $this->getConnectorObject($xml);
+        $instance->parseRequest($_GET, $xml);
+    }
+
+    private function getConnectorObject($xml) {
+        switch ($xml->type) {
+            case "sql":
+                $className = $this->getSQLClassName($this->_getParam("subtype"));
                 break;
-            case "form":
-                return new FormConnector(DBManager::getConnector(), "PDO");
+            case "cc":
+                $className = $xml->cc->className->__toString();
                 break;
             default:
-                Logger::warning(self::$log_type, "Unknown subtype: " . $subType);
+                Logger::warning(self::$log_type, "Unknown model type: " . $xml->type);
+        }
+        require_once("connectors/" . $className . ".php");
+        return new $className;
+    }
+
+    private function getSQLClassName($subtype) {
+        switch($subtype) {
+            case "grid":
+                return "SQLGridConnector";
+            case "form":
+                return "SQLFormConnector";
+            default:
+                Logger::warning(self::$log_type, "Unknown modelsub type: " . $subtype);
         }
     }
 
-    private function getValue($type, $xml, $id) {
+    private function getValues($type, $xml, $connectorObject, $id) {
         $values = array();
-        $idName = $xml->sql->id;
+        $idName = $connectorObject->getIdName($xml);
         switch ($type) {
             case "grid":
                 $values["$idName"] = $id;
-                $columns = explode(",", $xml->sql->columns);
+                $columns = $connectorObject->getColumnsNames($xml);
                 for ($c = 0; $c < count($columns); $c++) {
-                    $values[$columns[$c]] = $this->_getParam("c" . $c, null);
+                    $values[$columns[$c]] = $this->_getParam($id . "_c" . $c, null);
                 }
                 return $values;
                 break;
             case "form":
-                if ($id != 0) {
-                    $values["$idName"] = $id;
+                if ($this->_getParam($id . "_" . $idName) != 0) {
+                    $values["$idName"] = $this->_getParam($idName);
+                    $this->_setParam($id . "_!nativeeditor_status", "updated");
+                } else {
+                    unset($_POST[$id . "_" . $idName]);
                 }
-                foreach ($_GET as $key => $value) {
-                    if ($key != "gr_id" && $key != "!nativeeditor_status") {
+                foreach ($_POST as $key => $value) {
+                    if ($key != "ids" && $key != $id . "_!nativeeditor_status") {
+                        $key = substr($key, strrpos($key, "_") + 1);
                         $values["$key"] = $value;
                     }
                 }
@@ -135,5 +117,4 @@ class DataController extends Zend_Controller_Action {
     }
 
 }
-
 ?>

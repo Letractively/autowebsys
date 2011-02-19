@@ -1,5 +1,6 @@
 <?php
 
+require_once("core/FileManager.php");
 require_once("core/AuthManager.php");
 require_once("core/Translator.php");
 

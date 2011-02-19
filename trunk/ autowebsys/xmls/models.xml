@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <models>
     <model>
+        <name>custom_grid</name>
+        <type>cc</type>
+        <cc>
+            <className>MyConnector</className>
+            <id>id</id>
+        </cc>
+        <js>
+            <setHeader>{translator:USER_GRID_HEADERS}</setHeader>
+            <setInitWidthsP>15,*,15</setInitWidthsP>
+            <setColSorting>int,str,int</setColSorting>
+            <attachHeader>#text_filter,#text_filter,#text_filter</attachHeader>
+        </js>
+    </model>
+    <model>
         <name>users_grid</name>
         <type>sql</type>
         <sql>
@@ -13,6 +27,9 @@
         <js>
             <setHeader>{translator:USER_GRID_HEADERS}</setHeader>
             <setInitWidthsP>15,*,15</setInitWidthsP>
+            <setSkin>modern</setSkin>
+            <setColTypes>ed,ed,ed</setColTypes>
+            <setColSorting>int,str,int</setColSorting>
             <attachHeader>#text_filter,#text_filter,#text_filter</attachHeader>
         </js>
         <taskbar>
@@ -46,7 +63,7 @@
         <template>user_form_template</template>
         <sql>
             <insert>user_insert</insert>
-            <select>user_select</select>
+            <select>user_select_by_id</select>
             <update>user_update</update>
             <id>id</id>
             <columns>extension,username,balance</columns>

@@ -155,6 +155,8 @@ class Zend_Db_Select
      */
     protected $_tableCols = array();
 
+
+
     /**
      * Class constructor
      *

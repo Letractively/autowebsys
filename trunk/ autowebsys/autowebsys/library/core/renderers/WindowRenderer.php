@@ -8,6 +8,13 @@ class WindowRenderer {
     private static $defaultWidth = "100%";
     private static $defaultHeight = "150px";
 
+    public static function generateXML($name) {
+        header('Content-type: text/xml');
+        echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+        $window = ApplicationManager::getCachedValue(ApplicationManager::WINDOW_DESCRIPTION, $name);
+        echo STParser::parse($window);
+    }
+
 //    public static function renderDescription($window) {
 //        $out = "<window>";
 //        foreach ($window->children() as $child) {
@@ -41,5 +48,6 @@ class WindowRenderer {
     public static function getUID() {
         return uniqid();
     }
+
 }
 ?>

@@ -15,6 +15,7 @@
         <main-menu>
             <item id="users_group" text="{translator:MENU_USERS}" img="new.gif">
                 <item id="users_grid" text="{translator:MENU_USERS_GRID}" img="new.gif" />
+                <item id="custom_grid" text="{translator:MENU_CUSTOM_GRID}" img="new.gif" />
             </item>
         </main-menu>
     </interface>
