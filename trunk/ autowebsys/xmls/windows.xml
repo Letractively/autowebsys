@@ -8,6 +8,14 @@
             <html>{model:grid(users_grid)}</html>
         </content>
     </window>
+        <window id="users2_grid">
+        <title>u2</title>
+        <pos_x>100</pos_x>
+        <height>500</height>
+        <content>
+            <html>{model:grid(users2_grid)}</html>
+        </content>
+    </window>
     <window id="custom_grid">
         <title>{translator:WINDOW_CUSTOM_GRID}</title>
         <pos_x>100</pos_x>
@@ -19,9 +27,17 @@
     <window id="user_edit">
         <title>{translator:WINDOW_USER_EDIT}</title>
         <pos_y>0</pos_y>
-        <height>200</height>
+        <height>300</height>
         <content>
             <html>{model:form(user_edit_form)}</html>
+        </content>
+    </window>
+        <window id="user2_edit">
+        <title>f</title>
+        <pos_y>0</pos_y>
+        <height>300</height>
+        <content>
+            <html>{model:form(user2_edit_form)}</html>
         </content>
     </window>
 </windows>

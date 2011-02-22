@@ -34,6 +34,21 @@ utils = {
     }
 }
 
+validators = {
+    checkAndSend: function(form, processor, id) {
+        form.idvalue = id;
+        if(form.validate()) {
+            processor.sendData();
+        }
+    },
+
+    isUnique: function(queryName, idName, idValue, name, value) {
+        loader = dhtmlxAjax.getSync('/data/index/type/unique/name/' + queryName +
+            '/idname/' + idName + '/idvalue/' + idValue + '/cname/' + name + '/cvalue/' + value);
+        return loader.xmlDoc.responseXML.getElementsByTagName('action')[0].getAttribute('result') == 0;
+    }
+}
+
 String.prototype.startsWith = function(str){
     return (this.indexOf(str) === 0);
 }
@@ -98,7 +113,7 @@ Desktop.prototype.toolbarAction = function(id) {
             this.grid.clearAndLoad(this.grid.url);
             break;
         case "save":
-            alert(this.grid);
+            this.processor.sendData();
             break;
     }
 }

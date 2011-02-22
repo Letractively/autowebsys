@@ -10,17 +10,20 @@ class StreamerController extends Zend_Controller_Action {
 
     public function indexAction() {
         $type = $this->_getParam("type");
-        switch($type) {
+        switch ($type) {
             case "getjs":
                 $name = $this->_getParam("name");
                 $this->streamFile(FileManager::getJSPath() . $name, array("Content-type: application/javascript"));
+            case "getcss":
+                $name = $this->_getParam("name");
+                $this->streamFile(FileManager::getCSSPath() . $name, array("Content-type: text/css"));
             default:
                 Logger::warning(self::$log_type, "Unknown action type: " . $type);
         }
     }
 
     private function streamFile($path, $headers) {
-        if (file_exists ($path)) {
+        if (file_exists($path)) {
             foreach ($headers as $header) {
                 header($header);
             }

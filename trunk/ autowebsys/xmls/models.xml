@@ -56,6 +56,20 @@
             <not_selected_warn>{translator:GRID_NOT_SELECTED_WARN}</not_selected_warn>
             <confirm_delete>{translator:GRID_CONFIRM_DELETE}</confirm_delete>
         </internationalization>
+        <validators>
+            <validator>
+                <index>0</index>
+                <function>validators.isExtensionValid</function>
+            </validator>
+            <validator>
+                <index>1</index>
+                <function>validators.isUsernameUnique</function>
+            </validator>
+            <validator>
+                <index>2</index>
+                <function>validators.isFloat</function>
+            </validator>
+        </validators>
     </model>
     <model>
         <name>user_edit_form</name>
@@ -69,5 +83,45 @@
             <columns>extension,username,balance</columns>
         </sql>
         <onSave>application.register.refresh('users_grid');</onSave>
+    </model>
+    <model>
+        <name>users2_grid</name>
+        <type>sql</type>
+        <sql>
+            <select>user2_select</select>
+            <update>user2_update</update>
+            <delete>user2_delete</delete>
+            <id>a</id>
+            <columns>b</columns>
+        </sql>
+        <js>
+            <setHeader>b</setHeader>
+        </js>
+        <taskbar>
+            <add>
+                <label>{translator:GRID_BUTTON_ADD}</label>
+                <window>user2_edit</window>
+            </add>
+            <edit>
+                <label>{translator:GRID_BUTTON_EDIT}</label>
+                <window>user2_edit</window>
+            </edit>
+            <delete>
+                <label>{translator:GRID_BUTTON_DELETE}</label>
+            </delete>
+        </taskbar>
+    </model>
+    <model>
+        <name>user2_edit_form</name>
+        <type>sql</type>
+        <template>user2_form_template</template>
+        <sql>
+            <insert>user2_insert</insert>
+            <select>user2_select_by_id</select>
+            <update>user2_update</update>
+            <id>a</id>
+            <columns>b</columns>
+        </sql>
+        <onSave>application.register.refresh('users2_grid');</onSave>
     </model>
 </models>
