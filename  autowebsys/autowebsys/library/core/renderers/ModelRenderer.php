@@ -65,7 +65,29 @@ class ModelRenderer {
     }
 
     private static function buildGridProcessor($processorName, $gridType, $gridName) {
-        return "var $processorName = new dataProcessor('/data/processor/name/$gridType/type/grid/subtype/grid'); $processorName.init($gridName);";
+        $out = "";
+        $out .= "var $processorName = new dataProcessor('/data/processor/name/$gridType/type/grid/subtype/grid');";
+        $out .= "$processorName.init($gridName);";
+        return $out;
+    }
+
+    private static function addValidators($processorName, $validators) {
+        $out = "";
+        if (isset($validators)) {
+            foreach ($validators->children() as $validator) {
+                $index = $validator->index;
+                $function = $validator->function;
+                $out .= "$processorName.setVerificator($index, $function);";
+            }
+        }
+        return $out;
+    }
+
+    private static function pinProcessorToTaskbar($grid, $processorName, $taskbarName) {
+        if (isset($grid->xml->taskbar)) {
+            return "$taskbarName.processor = $processorName;";
+        }
+        return "";
     }
 
     private static function parseGridJS($gridName, $js) {
@@ -113,6 +135,8 @@ class ModelRenderer {
         $out .= self::buildGrid($grid->name);
         $out .= self::pinGridToTaskbar($grid, $grid->taskbarName, $grid->name);
         $out .= self::buildGridProcessor($grid->processorName, $grid->type, $grid->name);
+        $out .= self::addValidators($grid->processorName, $grid->xml->validators);
+        $out .= self::pinProcessorToTaskbar($grid, $grid->processorName, $grid->taskbarName);
         $out .= self::parseGridJS($grid->name, $grid->xml->js);
         $out .= self::initGrid($grid->name, $grid->type);
         $out .= self::addMessages($grid->xml->internationalization, $grid->name);
@@ -136,7 +160,7 @@ class ModelRenderer {
     }
 
     private static function openForm($name) {
-        return "<form action=\"\" method=\"post\" accept-charset=\"utf-8\" id=\"$name\">";
+        return "<form action=\"\" method=\"post\" accept-charset=\"utf-8\" name=\"$name\" id=\"$name\" \">";
     }
 
     private static function closeForm() {
@@ -144,7 +168,13 @@ class ModelRenderer {
     }
 
     private static function createForm($name) {
-        return "var $name = new dhtmlXForm('$name');$name.name = '$name';";
+        $out = "";
+        $out .= "var $name = new dhtmlXForm(document.$name.name);$name.name = '$name';";
+        return $out;
+    }
+
+    private static function addSaveEvent($formName, $processorName, $id) {
+        return "document.$formName.save.onclick=function(){ validators.checkAndSend($formName, $processorName, $id);};";
     }
 
     private static function loadFormData($name, $type, $id) {
@@ -155,16 +185,16 @@ class ModelRenderer {
         return "var $processorName = new dataProcessor('/data/processor/name/$type/type/form/subtype/form');$processorName.init($formName);";
     }
 
-    private static function openFormEvent($processorName) {
+    private static function openFormEventAfterUpdate($processorName) {
         return "$processorName.attachEvent('onAfterUpdate', function(sid, action, tid, xml_node){";
     }
 
-    private static function addId($idName, $idValue) {
-        return "<input type=\"hidden\" id=\"$idName\" value=\"$idValue\" bind=\"$idName\" />";
+    private static function closeFormEventAfterUpdate() {
+        return "return true;});";
     }
 
-    private static function closeFormEvent() {
-        return "return true;});";
+    private static function pinFormToProcessor($processorName, $formName) {
+        return "$processorName.form = $formName;";
     }
 
     private static function parseFormJS($js) {
@@ -177,8 +207,9 @@ class ModelRenderer {
     private static function refreshForm($wid) {
         $out = "";
         $out .= "var url = application.controlls.desktop.getWindowURL($wid);";
+        $out .= "var newUrl = '';";
         $out .= "if(url.lastIndexOf('=') == -1) {";
-        $out .= "   var newURL = url + '?id=' + xml_node.getAttribute('sid');";
+        $out .= "   newURL = url + '?id=' + xml_node.getAttribute('sid');";
         $out .= "   application.controlls.desktop.setWindowURL($wid, newURL);";
         $out .= "} else {";
         $out .= "   application.controlls.desktop.refreshWindow($wid);";
@@ -203,7 +234,6 @@ class ModelRenderer {
     private static function renderSQLForm($form, $id, $wid) {
         $out = "";
         $out .= self::openForm($form->name);
-        $out .= self::addId($form->xml->sql->id, $id);
         $out .= self::renderInputs($form->template->html);
         $out .= self::closeForm();
         $out .= self::openScript();
@@ -211,10 +241,12 @@ class ModelRenderer {
         $out .= self::register($form->type, $form->name);
         $out .= self::loadFormData($form->name, $form->type, $id);
         $out .= self::buildFormProcessor($form->processorName, $form->name, $form->type, $id);
-        $out .= self::openFormEvent($form->processorName);
+        $out .= self::pinFormToProcessor($form->processorName, $form->name);
+        $out .= self::addSaveEvent($form->name, $form->processorName, $id);
+        $out .= self::openFormEventAfterUpdate($form->processorName);
         $out .= self::parseFormJS($form->xml->onSave);
         $out .= self::refreshForm($wid);
-        $out .= self::closeFormEvent();
+        $out .= self::closeFormEventAfterUpdate();
         $out .= self::closeScript();
         return $out;
     }

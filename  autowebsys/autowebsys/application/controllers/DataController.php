@@ -31,6 +31,9 @@ class DataController extends Zend_Controller_Action {
                 $xmlModel = simplexml_load_string($model);
                 $this->renderObject($xmlModel);
                 break;
+            case "unique":
+                $this->checkUnique($name, $this->_getParam("idname"), $this->_getParam("idvalue"));
+                break;
             default:
                 Logger::warning(self::$log_type, "Unknown type: " . $type);
         }
@@ -51,6 +54,15 @@ class DataController extends Zend_Controller_Action {
         header('Content-type: text/xml');
         echo "<?xml version=\"1.0\"?>";
         echo "<data><action type=\"$state\" sid=\"" . $idValue . "\" tid=\"id\" /></data>";
+    }
+
+    private function checkUnique($queryName, $idName, $idValue) {
+        $name = $this->_getParam("cname");
+        $value = $this->_getParam("cvalue");
+        header('Content-type: text/xml');
+        echo "<?xml version=\"1.0\"?>";
+        $result = count(DBManager::getData($queryName, array("$idName" => $idValue, "$name" => $value)));
+        echo "<data><action type=\"uniqueTest\" result=\"$result\" /></data>";
     }
 
     private function renderObject($xml) {
