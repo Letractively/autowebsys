@@ -1,0 +1,106 @@
+= Tworzenie XML =
+Plik konfiguracyjny *musi* nazywać się configuration.xml. Jego minimalna struktura to:
+
+{{{
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+</config>
+}}}
+Jak widać nie ma tego dużo jednak też system nie będzie zbyt funkcjonalny przy takim ustawieniu :)
+----
+Definicja struktury paska startu mieści się w gałęzi `<interface>/<main-menu>` i może być dowolnie głęboko zagnieżdżana. Każda pozycja musi zawierać niepowtarzalne id, text oraz ikonkę.
+{{{
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+    <interface>
+        <main-menu>
+            <item id="id1" text="etykieta_1" img="new.gif">
+                <item id="id2" text="etykieta_2" img="new.gif" />
+                <item id="id3" text="etykieta_3" img="new.gif" />
+                <item id="id4" text="etykieta_4" img="new.gif" />
+            </item>
+        </main-menu>
+    </interface>
+</config>
+}}}
+----
+Teraz dobrze by było przypiąć pod te pozycje jakieś okienka:
+{{{
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+    <interface>
+        <main-menu>
+            <item id="id1" text="etykieta_1" img="new.gif">
+                <item id="id2" text="etykieta_2" img="new.gif" />
+                <item id="id3" text="etykieta_3" img="new.gif" />
+                <item id="id4" text="etykieta_4" img="new.gif" />
+            </item>
+        </main-menu>
+    </interface>
+    <windows>
+        <window id="id2">
+            <title>tytuł okna 1</title>
+            <pos_x>100</pos_x>
+            <pos_y>100</pos_y>
+            <height>500</height>
+            <width>500</width> 
+            <content>
+                <html>zawartość okna 1</html>
+            </content>
+        </window>
+        <window id="id3">
+            <title>tytuł okna 2</title>
+            <content>
+                <html>zawartość okna 2</html>
+            </content>
+        </window>
+    </windows>
+</config>
+}}}
+ID okna musi być takie samo jak ID przycisku z menu. Parametry tytułu, rozmieszczenia i rozmiaru są nieobowiązkowe.
+----
+W związku z tym, że plik konfiguracyjny zaczyna się rozrastać, dostępny jest tag `<include path="<path>" />`, który można wykorzystać w dowolnym miejscu. np.:
+`configuration.xml:`
+{{{
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+    <interface>
+        <main-menu>
+            <item id="users_group" text="{translator:MENU_USERS}" img="new.gif">
+                <item id="users_grid" text="{translator:MENU_USERS_GRID}" img="new.gif" />
+                <item id="users2_grid" text="u2" img="new.gif" />
+                <item id="custom_grid" text="{translator:MENU_CUSTOM_GRID}" img="new.gif" />
+            </item>
+        </main-menu>
+    </interface>
+    <windows>
+        <include path="windows.xml" />
+    </windows>
+}}}
+`windows.xml:`
+{{{
+<?xml version="1.0" encoding="UTF-8"?>
+<windows>
+    <window id="id2">
+        <title>tytuł okna 1</title>
+        <pos_x>100</pos_x>
+        <pos_y>100</pos_y>
+        <height>500</height>
+        <width>500</width> 
+        <content>
+            <html>zawartość okna 1</html>
+        </content>
+    </window>
+    <window id="id3">
+        <title>tytuł okna 2</title>
+        <content>
+            <html>zawartość okna 2</html>
+        </content>
+    </window>
+</windows>
+}}}
+Korzeń dołączanego pliku może mieć dowolną nazwę jednak zalecam używania nazwy węzła nadrzędnego. W dalszej części tego tutoriala będę trzymał wszystko w jednym pliku, pamiętaj jednak, że taga `<include>` możesz użyć w dowolnym miescu, ścieżka jest względna od katalogu `/htdoc/autowebsys/xmls`.
