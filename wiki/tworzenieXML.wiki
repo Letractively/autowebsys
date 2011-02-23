@@ -9,6 +9,17 @@ Plik konfiguracyjny *musi* nazywać się configuration.xml. Jego minimalna struk
 }}}
 Jak widać nie ma tego dużo jednak też system nie będzie zbyt funkcjonalny przy takim ustawieniu :)
 ----
+Pliki xml są automatyczne cachowane przez system, co może być niewygodne na etapie ich pisania. Możemy to naprawić dodając parametr `cache`:
+{{{
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+    <parameters>
+        <param name="cache">false</param>
+    </parameters>
+</config>
+}}}
+----
 Definicja struktury paska startu mieści się w gałęzi `<interface>/<main-menu>` i może być dowolnie głęboko zagnieżdżana. Każda pozycja musi zawierać niepowtarzalne id, text oraz ikonkę.
 {{{
 <?xml version="1.0" encoding="UTF-8"?>
@@ -63,6 +74,7 @@ Teraz dobrze by było przypiąć pod te pozycje jakieś okienka:
 ID okna musi być takie samo jak ID przycisku z menu. Parametry tytułu, rozmieszczenia i rozmiaru są nieobowiązkowe.
 ----
 W związku z tym, że plik konfiguracyjny zaczyna się rozrastać, dostępny jest tag `<include path="<path>" />`, który można wykorzystać w dowolnym miejscu. np.:
+
 `configuration.xml:`
 {{{
 <?xml version="1.0" encoding="UTF-8"?>
@@ -104,3 +116,4 @@ W związku z tym, że plik konfiguracyjny zaczyna się rozrastać, dostępny jes
 </windows>
 }}}
 Korzeń dołączanego pliku może mieć dowolną nazwę jednak zalecam używania nazwy węzła nadrzędnego. W dalszej części tego tutoriala będę trzymał wszystko w jednym pliku, pamiętaj jednak, że taga `<include>` możesz użyć w dowolnym miescu, ścieżka jest względna od katalogu `/htdoc/autowebsys/xmls`.
+----
