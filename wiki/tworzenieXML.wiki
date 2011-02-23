@@ -25,6 +25,9 @@ Definicja struktury paska startu mieści się w gałęzi `<interface>/<main-menu
 <?xml version="1.0" encoding="UTF-8"?>
 
 <config>
+    <parameters>
+        <param name="cache">false</param>
+    </parameters>
     <interface>
         <main-menu>
             <item id="id1" text="etykieta_1" img="new.gif">
@@ -42,6 +45,9 @@ Teraz dobrze by było przypiąć pod te pozycje jakieś okienka:
 <?xml version="1.0" encoding="UTF-8"?>
 
 <config>
+    <parameters>
+        <param name="cache">false</param>
+    </parameters>
     <interface>
         <main-menu>
             <item id="id1" text="etykieta_1" img="new.gif">
@@ -80,6 +86,9 @@ W związku z tym, że plik konfiguracyjny zaczyna się rozrastać, dostępny jes
 <?xml version="1.0" encoding="UTF-8"?>
 
 <config>
+    <parameters>
+        <param name="cache">false</param>
+    </parameters>
     <interface>
         <main-menu>
             <item id="users_group" text="{translator:MENU_USERS}" img="new.gif">
