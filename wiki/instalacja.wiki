@@ -1,0 +1,7 @@
+= Instalacja =
+
+W celu instalacji należy ściągnąć pliki z svn z katalogu /trunk/autowebsys i umieścić w dowolnym katalogu(np. htdoc). Następnie należy skonfigurować virtual hosta w apache'u i wskazać na folder /htdoc/autowebsys/public. Wymagany jest włączony moduł 'RewriteEngine' oraz ustawiona opcja 'AllowOverride All' w virtual hoście.
+
+'Autowebsys' do działania wymaga uruchomionego daemona 'Memcache' na standardowym porcie 11211.
+
+W konfiguracji PHP należy również włączyć 'short tags'.
