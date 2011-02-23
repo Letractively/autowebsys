@@ -91,10 +91,10 @@ W związku z tym, że plik konfiguracyjny zaczyna się rozrastać, dostępny jes
     </parameters>
     <interface>
         <main-menu>
-            <item id="users_group" text="{translator:MENU_USERS}" img="new.gif">
-                <item id="users_grid" text="{translator:MENU_USERS_GRID}" img="new.gif" />
-                <item id="users2_grid" text="u2" img="new.gif" />
-                <item id="custom_grid" text="{translator:MENU_CUSTOM_GRID}" img="new.gif" />
+            <item id="id1" text="etykieta_1" img="new.gif">
+                <item id="id2" text="etykieta_2" img="new.gif" />
+                <item id="id3" text="etykieta_3" img="new.gif" />
+                <item id="id4" text="etykieta_4" img="new.gif" />
             </item>
         </main-menu>
     </interface>
