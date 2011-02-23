@@ -195,6 +195,6 @@ Poniżej prezentuję minimalną konfigurację tabelki
     </model>
 </models>
 }}}
-Każdy model musi posiadać unikalną nazwę. Dozwolone są modele innego typu niż SQL ale o tym później. Gałąź `<sql>` dostarcza informacji o sposobie komunikowania się modelu z bazą danych. Wartości tagów `<select>`, `<update>` oraz `<delete>` to nazwy zapytań. Tag '<id>' to nazwa kolumny identyfikatora, tag `<columns>` to nazwy kolumn, których dotyczą operacje CRUD.
+Każdy model musi posiadać unikalną nazwę. Dozwolone są modele innego typu niż SQL ale o tym później. Gałąź `<sql>` dostarcza informacji o sposobie komunikowania się modelu z bazą danych. Wartości tagów `<select>`, `<update>` oraz `<delete>` to nazwy zapytań. Tag `<id>` to nazwa kolumny identyfikatora, tag `<columns>` to nazwy kolumn, których dotyczą operacje CRUD.
 
 Gałąź JS musi zawierać przynajmniej definicję nagłówków tabeli wymienionych po przecinku, w artykule [tagiJSdlaTabelki tagi JS dla tabelki] opisane są pozostałe tagi.
