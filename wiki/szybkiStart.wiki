@@ -1,0 +1,21 @@
+= Szybki start =
+Jeśli nie wiesz jak zacząć, to poniższy artykuł powinien Ci w tym pomóc. To co musisz wiedzieć na początku, to że cała konfiguracja aplikacji mieści się w plikach XML. Jeśli chcesz budować aplikację opartą o proste operacja na bazach danych, nie potrzebujesz niczego więcej. 'Autowebsys' pozwala jednak na trochę więcej, np. budowanie tabelek w oparciu o niestandardowe dane, wtedy jednak potrzeba już napisać też trochę kodu PHP i JS.
+
+== Instalacja ==
+Zanim zaczniesz, upewnij się, że masz zainstalowane wszystkie wymagane komponenty. Wszystko co będzie potrzebne opisane jest w osobnym artykule [wymaganiaSystemowe wymagania systemowe].
+
+W następnym kroku powinieneś zapoznać się z [strukturaFolderowUzytkownik podstawową strukturą folderów]. Jeśli chcesz wiedzieć więcej, możesz też zobaczyć jak wygląda [strukturaFolderow pełna struktura folderów].
+
+Jeśli już wiesz, co gdzie się znajduje, możesz przystąpić do [instalacja instalacji].
+
+== Konfiguracja ==
+W artykule '[tworzenieXML tworzenie XML]' opisane jest krok po kroku jak stworzyć konfiguracje dla aplikacji, kiedy już się z tym zapoznasz możesz zobaczyć przykładową konfigurację aplikacji w [XMLConfigExample moim przykładzie] oraz zapoznać się ze [XMLTags spisem tagów].
+
+== Własny kod ==
+=== Walidatory ===
+Jako, że aplikacja musi być odporna na błędnie wprowadzone dane, dostępnych jest paręnaście [JSValidators walidatorów]. Można również dodawać własne, instrukcja dostępna jest w artykule '[CustomJSValidators własne walidatory]'.
+=== Własne modele danych ===
+Jeśli będziesz potrzebował zbudować kontrolkę zasilaną innymi danymi niż z bazy danych, możesz napisać własny model dla [customGridModel tabelki] jak i dla [customFormModel formularza].
+
+== Autoryzacja ==
+Jak w każdej innej aplikacji, dostępny jest również mechanizm [Autoryzacja autoryzacji].
