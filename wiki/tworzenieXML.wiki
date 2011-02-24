@@ -265,7 +265,7 @@ Wracając do szablonów, w przypadku formularzy można zaprojektować dowolny wy
     </template>
 </templates>
 }}}
-Atrybut `bind` wskazuje na nazwę atrybutu tabeli z bazy danych, z którym pole ma być związane. atrybut 'validate' pozwala na wskazanie nazw walidatorów kontrolujących poprawność danych. Można podać dowolną ilość walidatorów oddzielonych przecinkiem. Więcej [JSValidators w tym artykule].
+Atrybut `bind` wskazuje na nazwę atrybutu tabeli z bazy danych, z którym pole ma być związane. atrybut 'validate' pozwala na wskazanie nazw walidatorów kontrolujących poprawność danych. Można podać dowolną ilość walidatorów oddzielonych przecinkiem. Więcej [JSValidators w tym artykule]. Zwróć uwagę na konstrukcję przycisku wysyłającego dane, musi on być typu `button`, nie `submit` oraz atrybut `id` o wartości `save`. Inaczej nie zostanie rozpoznany poprawnie przez system
 === Tabelka ===
 Poniżej prezentuję minimalną konfigurację tabelki
 {{{
