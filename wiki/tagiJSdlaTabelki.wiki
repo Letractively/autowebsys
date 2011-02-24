@@ -1,5 +1,5 @@
 = Tagi JS dla tabelki =
-Tagi JS są przeniesieniem wprost metod dostępnych dla tabelki DhtmlxGrid. Nazwą taga jest nazwa metody a parametry podaje się jako zawartość taga. Parametry rozdziela się przecinkiem. Np. dla metody setColumnColor(clr) konstrukcja będzie wyglądać następująco: `<setColumnColor>clr</setColumnColor>`
+Tagi JS są przeniesieniem wprost metod dostępnych dla tabelki `DhtmlxGrid`. Nazwą taga jest nazwa metody a parametry podaje się jako zawartość taga. Parametry rozdziela się przecinkiem. Np. dla metody setColumnColor(clr) konstrukcja będzie wyglądać następująco: `<setColumnColor>clr</setColumnColor>`. Nie wszystkie metody zostały przetestowane, w razie problemów, proszę o założenie ticketa z opisem błędu.
  * adjustColumnSize(cInd) - http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:api_method_dhtmlxgridobject_adjustcolumnsize
  * attachHeader(values, style) - http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:api_method_dhtmlxgridobject_attachheader
  * enableAlterCss(cssE, cssU, perLevel, levelUnique) - http://docs.dhtmlx.com/doku.php?id=dhtmlxgrid:api_method_dhtmlxgridobject_enablealtercss
