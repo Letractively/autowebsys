@@ -162,6 +162,7 @@ Jednym z ich zastosowań jest wykorzystanie mechanizmu internacjonalizacji, tak 
 </config>
 }}}
 Etykiety są wyszukiwane zgodnie z opisem w artykule [Internacjonalizacja].
+== Szablony ==
 == Konfiguracja bazy danych ==
 Jako, że większość systemów wymaga dostępu do bazy danych, możliwość ta jest dostępna również tutaj. W celu konfiguracji bazy należy dodać nową gałąź do pliku konfiguracyjnego:
 {{{
@@ -190,7 +191,6 @@ Zanim wprowadzimy bardziej złożone kontrolki, opiszę bibliotekę zapytań. W 
 Jak widać pytania są sparametryzowane, każdy parametr poprzedzony jest znakiem `:` a po nim następuje nazwa kolumny.
 == Standardowe modele SQL ==
 Niewiele by było pożytku z okien ze statyczną zawartością, dodajmy zatem tabelki. Żeby to zrobić, musimy wprowadzić nową gałąź konfiguracji: `<models>`. Każda złożona kontrolka(tabelka czy formularz) wymaga zestawu dodatkowych parametrów.
-=== Szablony ===
 === Formularze ===
 
 === Tabelka ===
