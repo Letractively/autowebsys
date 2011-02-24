@@ -161,6 +161,20 @@ Jednym z ich zastosowań jest wykorzystanie mechanizmu internacjonalizacji, tak 
 </config>
 }}}
 Etykiety są wyszukiwane zgodnie z opisem w artykule [Internacjonalizacja].
+== Konfiguracja bazy danych ==
+Jako, że większość systemów wymaga dostępu do bazy danych, możliwość ta jest dostępna również tutaj. W celu konfiguracji bazy należy dodać nową gałąź do pliku konfiguracyjnego:
+{{{
+<config>
+    <data>
+        <datasource url="mysql:host=127.0.0.1;dbname=autowebsys" user="autowebsys" password="AUTO#web.sys" />
+        <queries>
+            ...
+        </queries>
+    </data>
+    ...
+</config>
+}}}
+Obsługa baz danych zaimplementowana jest w oparciu o [http://php.net/manual/en/book.pdo.php PHP PDO]. Parametr URL to `connection string` zgodny z PDO.
 == Biblioteka zapytań SQL ==
 Zanim wprowadzimy bardziej złożone kontrolki, opiszę bibliotekę zapytań. W celu podniesienie bezpieczeństwa aplikacji, wszystkie zapytania do DB zgromadzone są w pliku konfiguracyjnym a użytkownicy końcowi mogą się odwoływać do tych zapytań na podstawie ich nazwy. Pozwala to uniknąć ataku typu `SQL injection`. Pliki zapytań zgromadzone są w gałęzi `<queries>`:
 {{{
@@ -175,6 +189,9 @@ Zanim wprowadzimy bardziej złożone kontrolki, opiszę bibliotekę zapytań. W 
 Jak widać pytania są sparametryzowane, każdy parametr poprzedzony jest znakiem `:` a po nim następuje nazwa kolumny.
 == Standardowe modele SQL ==
 Niewiele by było pożytku z okien ze statyczną zawartością, dodajmy zatem tabelki. Żeby to zrobić, musimy wprowadzić nową gałąź konfiguracji: `<models>`. Każda złożona kontrolka(tabelka czy formularz) wymaga zestawu dodatkowych parametrów.
+=== Szablony ===
+=== Formularze ===
+
 === Tabelka ===
 Poniżej prezentuję minimalną konfigurację tabelki
 {{{
@@ -198,3 +215,6 @@ Poniżej prezentuję minimalną konfigurację tabelki
 Każdy model musi posiadać unikalną nazwę. Dozwolone są modele innego typu niż SQL ale o tym później. Gałąź `<sql>` dostarcza informacji o sposobie komunikowania się modelu z bazą danych. Wartości tagów `<select>`, `<update>` oraz `<delete>` to nazwy zapytań. Tag `<id>` to nazwa kolumny identyfikatora, tag `<columns>` to nazwy kolumn, których dotyczą operacje CRUD.
 
 Gałąź JS musi zawierać przynajmniej definicję nagłówków tabeli wymienionych po przecinku, w artykule [tagiJSdlaTabelki tagi JS dla tabelki] opisane są pozostałe tagi.
+==== Pasek narzędzi dla tabelki ====
+==== Internacjonalizacja tabelki ====
+=== Modele niestandardowe ===
