@@ -163,6 +163,17 @@ Jednym z ich zastosowań jest wykorzystanie mechanizmu internacjonalizacji, tak 
 }}}
 Etykiety są wyszukiwane zgodnie z opisem w artykule [Internacjonalizacja].
 == Szablony ==
+Każdy system zawiera pewne powtarzalne elementy, dlatego też warto wydzielić mechanizm dla szablonów. To jak go użyć, jest opisane w dalszej części tego tutoriala. Formularze mieszczą się w gałęzi `<templates>` a ich struktura wygląda tak:
+{{{
+<templates>
+    <temaplate>
+        <name>user_form_template</name>
+        <html>
+            <!-- dowolny kod html -->
+        </html>
+    </template>
+</templates>
+}}}
 == Konfiguracja bazy danych ==
 Jako, że większość systemów wymaga dostępu do bazy danych, możliwość ta jest dostępna również tutaj. W celu konfiguracji bazy należy dodać nową gałąź do pliku konfiguracyjnego:
 {{{
@@ -192,7 +203,69 @@ Jak widać pytania są sparametryzowane, każdy parametr poprzedzony jest znakie
 == Standardowe modele SQL ==
 Niewiele by było pożytku z okien ze statyczną zawartością, dodajmy zatem tabelki. Żeby to zrobić, musimy wprowadzić nową gałąź konfiguracji: `<models>`. Każda złożona kontrolka(tabelka czy formularz) wymaga zestawu dodatkowych parametrów.
 === Formularze ===
+Czas już najwyższy wprowadzić jakąś konkretną kontrolkę, zacznijmy od formularzy:
+{{{
+<models>
+    <model>
+        <name>user_edit_form</name>
+        <type>sql</type>
+        <template>user_form_template</template>
+        <sql>
+            <insert>user_insert</insert>
+            <select>user_select_by_id</select>
+            <update>user_update</update>
+            <id>id</id>
+            <columns>extension,username,balance</columns>
+        </sql>
+        <onSave>application.register.refresh('users_grid');</onSave>
+    </model>
+</models>
+}}}
+Każdy model musi posiadać unikalną nazwę. Tag `<type>` definiuje rodzaj formularza, póki co, załóżmy że musi to być sql. Tag `<template>` to odwołanie do szablonu formularza, czyli tego jak on będzie wyglądać(więcej za chwilę). Gałąź `<sql>` dostarcza informacji o sposobie komunikowania się modelu z bazą danych. Wartości tagów `<select>`, `<update>` oraz `<delete>` to nazwy zapytań. Tag `<id>` to nazwa kolumny identyfikatora, tag `<columns>` to nazwy kolumn, których dotyczą operacje CRUD.
+Tag `<onSave>` zawiera kod JS, który zostanie wywołany po zapisaniu formularza. Konstrukcja, która jest w powyższym przykładzie wywoła odświeżenie wszystkich otwartych tabelek o nazwie modelu `users_grid` i narazie na tym poprzestańmy :)
 
+Wracając do szablonów, w przypadku formularzy można zaprojektować dowolny wygląd formularza używając standardowych tagów HTML rozszerzonych o kilka dodatkowych atrybutów:
+{{{
+<templates>
+    <template>
+        <name>user_form_template</name>
+        <html>
+            <div>
+                <fieldset>
+                    <legend>{translator:USER_FORM_TITLE}</legend>
+                    <table>
+                        <tr>
+                            <td style="width: 150px">{translator:FORM_USER_LABEL_EXTENSION}</td>
+                            <td style="width: 100%;">
+                                <input type="text" id="user_form_extension" bind="extension" validate="NotEmpty,ValidInteger,isExtensionUnique" style="width: 100%;" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 150px">{translator:FORM_USER_LABEL_USERNAME}</td>
+                            <td style="width: 100%;">
+                                <input type="text" id="user_form_username" bind="username" validate="NotEmpty,isUsernameUnique" style="width: 100%;" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 150px">{translator:FORM_USER_LABEL_BALANCE}</td>
+                            <td style="width: 100%;">
+                                <input type="text" id="user_form_balance" bind="balance" validate="NotEmpty,ValidNumeric" style="width: 100%;" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="width: 100%;">
+                                <input type="hidden" id="user_form_id" bind="id" style="width: 100%;" />
+                                <input type="button" id="save" value="{translator:FORM_USER_LABEL_SUBMIT}" />
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+            </div>
+        </html>
+    </template>
+</templates>
+}}}
+Atrybut `bind` wskazuje na nazwę atrybutu tabeli z bazy danych, z którym pole ma być związane. atrybut 'validate' pozwala na wskazanie nazw walidatorów kontrolujących poprawność danych. Można podać dowolną ilość walidatorów oddzielonych przecinkiem. Więcej [JSValidators w tym artykule].
 === Tabelka ===
 Poniżej prezentuję minimalną konfigurację tabelki
 {{{
@@ -213,7 +286,7 @@ Poniżej prezentuję minimalną konfigurację tabelki
     </model>
 </models>
 }}}
-Każdy model musi posiadać unikalną nazwę. Dozwolone są modele innego typu niż SQL ale o tym później. Gałąź `<sql>` dostarcza informacji o sposobie komunikowania się modelu z bazą danych. Wartości tagów `<select>`, `<update>` oraz `<delete>` to nazwy zapytań. Tag `<id>` to nazwa kolumny identyfikatora, tag `<columns>` to nazwy kolumn, których dotyczą operacje CRUD.
+Tagi `<name>`, `<type>` oraz `<sql>` mają takie samo znaczenie jak w przypadku formularzy.
 
 Gałąź JS musi zawierać przynajmniej definicję nagłówków tabeli wymienionych po przecinku, w artykule [tagiJSdlaTabelki tagi JS dla tabelki] opisane są pozostałe tagi.
 ==== Pasek narzędzi dla tabelki ====
