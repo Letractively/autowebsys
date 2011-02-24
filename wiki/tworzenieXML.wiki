@@ -218,4 +218,4 @@ Każdy model musi posiadać unikalną nazwę. Dozwolone są modele innego typu n
 Gałąź JS musi zawierać przynajmniej definicję nagłówków tabeli wymienionych po przecinku, w artykule [tagiJSdlaTabelki tagi JS dla tabelki] opisane są pozostałe tagi.
 ==== Pasek narzędzi dla tabelki ====
 ==== Internacjonalizacja tabelki ====
-=== Modele niestandardowe ===
+== Modele niestandardowe ==
