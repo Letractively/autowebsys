@@ -6,8 +6,15 @@ class DBManager {
     private static $log_type = "DB";
 
     public static function fetchAll($query) {
-        $statement = self::getConnector()->query($query);
+        $statement = self::getConnector()->prepare($query);
+        $statement->execute();
         return $statement->fetchALL(PDO::FETCH_OBJ);
+    }
+
+    public static function fetchRow($query) {
+        $statement = self::getConnector()->prepare($query);
+        $statement->execute();
+        return $statement->fetch(PDO::FETCH_OBJ);
     }
 
     public static function getData($queryName, $parameters = array()) {

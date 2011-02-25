@@ -13,6 +13,13 @@ class ModelRenderer {
         return "<div id=\"$id\" style=\"$style\"></div>";
     }
 
+    private static function adjustSizeToFullHeight($id) {
+        $out = "";
+        $out .= "var el = document.getElementById('$id');";
+        $out .= "el.style.height = (el.offsetHeight - 30) + 'px';";
+        return $out;
+    }
+
     private static function openScript() {
         return "<script type=\"text/javascript\">";
     }
@@ -95,7 +102,7 @@ class ModelRenderer {
         foreach ($js->children() as $js) {
             $parsedValue = STParser::parse($js->__toString());
             $tagName = $js->getName();
-            $out .= "$gridName.$tagName('$parsedValue');";
+            $out .= "$gridName.$tagName($parsedValue);";
         }
         return $out;
     }
@@ -103,8 +110,10 @@ class ModelRenderer {
     private static function initGrid($gridName, $gridType) {
         $out = "";
         $out .= "$gridName.init();";
+        $out .= "$gridName.setAwaitedRowHeight(20);";
+        $out .= "$gridName.enableSmartRendering(true, 100);";
         $out .= "$gridName.url = '/data/index/type/model/subtype/grid/name/$gridType';";
-        $out .= "$gridName.load($gridName.url);";
+        $out .= "$gridName.loadXML($gridName.url);";
         return $out;
     }
 
@@ -125,14 +134,31 @@ class ModelRenderer {
         return "application.register.add('$type', $object);";
     }
 
+    private static function addEvents($gridName) {
+        $out = "";
+        $out .= "$gridName.attachEvent('onXLS', function(grid_obj){";
+        $out .= "   var el = document.getElementById('$gridName'); ";
+        $out .= "   el.style.filter = 'alpha(Opacity=50)';";
+        $out .= "   el.style.opacity = '0.5';";
+        $out .= "}); ";
+        $out .= "$gridName.attachEvent('onXLE', function(grid_obj){";
+        $out .= "   var el = document.getElementById('$gridName'); ";
+        $out .= "   el.style.filter = 'alpha(Opacity=100)';";
+        $out .= "   el.style.opacity = '1';";
+        $out .= "}); ";
+        return $out;
+    }
+
     public static function renderSQLGrid($xml, $wid) {
         $grid = new Grid($xml);
         $out = "";
         $out .= self::buildTaskbarDiv($grid);
         $out .= self::buildDiv($grid->name, "width: 100%; height: 100%;");
         $out .= self::openScript();
+        $out .= self::adjustSizeToFullHeight($grid->name);
         $out .= self::buildTaskbar($grid, $grid->taskbarName, $grid->type);
         $out .= self::buildGrid($grid->name);
+        $out .= self::addEvents($grid->name);
         $out .= self::pinGridToTaskbar($grid, $grid->taskbarName, $grid->name);
         $out .= self::buildGridProcessor($grid->processorName, $grid->type, $grid->name);
         $out .= self::addValidators($grid->processorName, $grid->xml->validators);

@@ -8,10 +8,11 @@
             <id>id</id>
         </cc>
         <js>
-            <setHeader>{translator:USER_GRID_HEADERS}</setHeader>
-            <setInitWidthsP>15,*,15</setInitWidthsP>
-            <setColSorting>int,str,int</setColSorting>
-            <attachHeader>#text_filter,#text_filter,#text_filter</attachHeader>
+            <setHeader>'{translator:USER_GRID_HEADERS}'</setHeader>
+            <setInitWidthsP>'15,*,15'</setInitWidthsP>
+            <setColSorting>'int,str,int'</setColSorting>
+            <setSkin>'modern'</setSkin>
+            <attachHeader>'#text_filter,#text_filter,#text_filter'</attachHeader>
         </js>
     </model>
     <model>
@@ -25,12 +26,11 @@
             <columns>extension,username,balance</columns>
         </sql>
         <js>
-            <setHeader>{translator:USER_GRID_HEADERS}</setHeader>
-            <setInitWidthsP>15,*,15</setInitWidthsP>
-            <setSkin>modern</setSkin>
-            <setColTypes>ed,ed,ed</setColTypes>
-            <setColSorting>int,str,int</setColSorting>
-            <attachHeader>#text_filter,#text_filter,#text_filter</attachHeader>
+            <setHeader>'{translator:USER_GRID_HEADERS}'</setHeader>
+            <setInitWidthsP>'15,*,15'</setInitWidthsP>
+            <setSkin>'modern'</setSkin>
+            <setColSorting>'connector,connector,connector'</setColSorting>
+            <attachHeader>'#connector_text_filter,#connector_text_filter,#connector_text_filter'</attachHeader>
         </js>
         <taskbar>
             <add>
