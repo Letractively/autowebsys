@@ -8,7 +8,7 @@ class MainMenuRenderer {
     public static function generateXML() {
         header('Content-type: text/xml');
         echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        $menu = ApplicationManager::getCachedValue(ApplicationManager::INTERFACE_MAINMENU);
+        $menu = ApplicationManager::getCachedValue(ApplicationManager::$INTERFACE_MAINMENU);
         echo STParser::parse($menu);
     }
 

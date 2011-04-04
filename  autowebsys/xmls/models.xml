@@ -8,7 +8,7 @@
             <id>id</id>
         </cc>
         <js>
-            <setHeader>'{translator:USER_GRID_HEADERS}'</setHeader>
+            <setHeader>'${translator(USER_GRID_HEADERS)}'</setHeader>
             <setInitWidthsP>'15,*,15'</setInitWidthsP>
             <setColSorting>'int,str,int'</setColSorting>
             <setSkin>'modern'</setSkin>
@@ -26,7 +26,7 @@
             <columns>extension,username,balance</columns>
         </sql>
         <js>
-            <setHeader>'{translator:USER_GRID_HEADERS}'</setHeader>
+            <setHeader>'${translator(USER_GRID_HEADERS)}'</setHeader>
             <setInitWidthsP>'15,*,15'</setInitWidthsP>
             <setSkin>'modern'</setSkin>
             <setColSorting>'connector,connector,connector'</setColSorting>
@@ -34,27 +34,27 @@
         </js>
         <taskbar>
             <add>
-                <label>{translator:GRID_BUTTON_ADD}</label>
+                <label>${translator(GRID_BUTTON_ADD)}</label>
                 <window>user_edit</window>
             </add>
             <edit>
-                <label>{translator:GRID_BUTTON_EDIT}</label>
+                <label>${translator(GRID_BUTTON_EDIT)}</label>
                 <window>user_edit</window>
             </edit>
             <delete>
-                <label>{translator:GRID_BUTTON_DELETE}</label>
+                <label>${translator(GRID_BUTTON_DELETE)}</label>
             </delete>
             <separator />
             <refresh>
-                <label>{translator:GRID_BUTTON_REFRESH}</label>
+                <label>${translator(GRID_BUTTON_REFRESH)}</label>
             </refresh>
             <save>
-                <label>{translator:GRID_BUTTON_SAVE}</label>
+                <label>${translator(GRID_BUTTON_SAVE)}</label>
             </save>
         </taskbar>
         <internationalization>
-            <not_selected_warn>{translator:GRID_NOT_SELECTED_WARN}</not_selected_warn>
-            <confirm_delete>{translator:GRID_CONFIRM_DELETE}</confirm_delete>
+            <not_selected_warn>${translator(GRID_NOT_SELECTED_WARN)}</not_selected_warn>
+            <confirm_delete>${translator(GRID_CONFIRM_DELETE)}</confirm_delete>
         </internationalization>
         <validators>
             <validator>
@@ -99,15 +99,15 @@
         </js>
         <taskbar>
             <add>
-                <label>{translator:GRID_BUTTON_ADD}</label>
+                <label>${translator(GRID_BUTTON_ADD)}</label>
                 <window>user2_edit</window>
             </add>
             <edit>
-                <label>{translator:GRID_BUTTON_EDIT}</label>
+                <label>${translator(GRID_BUTTON_EDIT)}</label>
                 <window>user2_edit</window>
             </edit>
             <delete>
-                <label>{translator:GRID_BUTTON_DELETE}</label>
+                <label>${translator(GRID_BUTTON_DELETE)}</label>
             </delete>
         </taskbar>
     </model>

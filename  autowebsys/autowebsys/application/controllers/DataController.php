@@ -23,11 +23,11 @@ class DataController extends Zend_Controller_Action {
                 WindowRenderer::generateXML($name);
                 break;
             case "window-content":
-                $window = ApplicationManager::getCachedValue(ApplicationManager::WINDOW_CONTENT, $name);
+                $window = ApplicationManager::getCachedValue(ApplicationManager::$WINDOW_CONTENT, $name);
                 echo STParser::parse($window, $this->_getAllParams());
                 break;
             case "model":
-                $model = ApplicationManager::getCachedValue(ApplicationManager::DATA_MODEL_SQL, $name);
+                $model = ApplicationManager::getCachedValue(ApplicationManager::$DATA_MODEL_SQL, $name);
                 $xmlModel = simplexml_load_string($model);
                 $this->renderObject($xmlModel);
                 break;
@@ -43,7 +43,7 @@ class DataController extends Zend_Controller_Action {
         $name = $this->_getParam("name");
         $type = $this->_getParam("type");
         Logger::notice(self::$log_type, "Processing model: " . $name);
-        $model = ApplicationManager::getCachedValue(ApplicationManager::DATA_MODEL_SQL, $name);
+        $model = ApplicationManager::getCachedValue(ApplicationManager::$DATA_MODEL_SQL, $name);
         $xmlModel = simplexml_load_string($model);
         $connectorObject = $this->getConnectorObject($xmlModel);
         $requestId = $this->_getParam("ids", null);

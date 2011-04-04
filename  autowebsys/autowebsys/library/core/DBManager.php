@@ -18,7 +18,7 @@ class DBManager {
     }
 
     public static function getData($queryName, $parameters = array()) {
-        $query = ApplicationManager::getCachedValue(ApplicationManager::DB_QUERY, $queryName);
+        $query = ApplicationManager::getCachedValue(ApplicationManager::$DB_QUERY, $queryName);
         Logger::notice(self::$log_type, "Getting data from named query: " . $query);
         $statement = self::getConnector()->prepare($query);
         foreach ($parameters as $key => $value) {
@@ -30,7 +30,7 @@ class DBManager {
     }
 
     public static function execute($queryName, $parameters = array()) {
-        $query = ApplicationManager::getCachedValue(ApplicationManager::DB_QUERY, $queryName);
+        $query = ApplicationManager::getCachedValue(ApplicationManager::$DB_QUERY, $queryName);
         $statement = self::getConnector()->prepare($query);
         foreach ($parameters as $key => $value) {
             Logger::notice(self::$log_type, "Binding: :" . $key . "=" . $value);
@@ -51,7 +51,7 @@ class DBManager {
     public static function getConnector() {
         if (self::$dbh == null) {
             try {
-                $credentials = ApplicationManager::getCachedValue(ApplicationManager::DB_CREDENTIALS);
+                $credentials = ApplicationManager::getCachedValue(ApplicationManager::$DB_CREDENTIALS);
                 self::$dbh = new PDO($credentials['url'], $credentials['user'], $credentials['password'], array(PDO::ATTR_PERSISTENT => true));
             } catch (PDOExceptione $e) {
                 Logger::alert(self::$log_type, $e->getMessage());

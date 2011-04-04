@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tags>
+    <tag>
+        <name>translator</name>
+        <class>TTranslator</class>
+        <method>getText</method>
+    </tag>
+    <tag>
+        <name>model</name>
+        <class>TModelsRenderer</class>
+        <method>parseModel</method>
+    </tag>
+</tags>
