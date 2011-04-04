@@ -37,7 +37,7 @@ class SQLGridConnector extends DataGridConnector {
     }
 
     protected function getData() {
-        $query = ApplicationManager::getCachedValue(ApplicationManager::DB_QUERY, $this->model->sql->select->__toString());
+        $query = ApplicationManager::getCachedValue(ApplicationManager::$DB_QUERY, $this->model->sql->select->__toString());
         $query = $this->addFilters($query);
         $this->totalCount = $this->getTotalCount($query);
         $query = $this->addSortOrder($query);

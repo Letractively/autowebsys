@@ -11,7 +11,7 @@ class Form {
     
     function __construct($xml) {
         $this->xml = simplexml_load_string($xml);
-        $this->template = simplexml_load_string(ApplicationManager::getCachedValue(ApplicationManager::DATA_TEMPLATE, $this->xml->template));
+        $this->template = simplexml_load_string(ApplicationManager::getCachedValue(ApplicationManager::$DATA_TEMPLATE, $this->xml->template));
         $uid = WindowRenderer::getUID();
         $this->uid = $uid;
         $this->type = $this->xml->name;

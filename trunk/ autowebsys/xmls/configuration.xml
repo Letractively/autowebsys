@@ -9,14 +9,14 @@
     </data>
     <parameters>
         <param name="authAdapter">PublicAdapter</param>
-        <param name="cache">true</param>
+        <param name="cache">false</param>
     </parameters>
     <interface>
         <main-menu>
-            <item id="users_group" text="{translator:MENU_USERS}" img="new.gif">
-                <item id="users_grid" text="{translator:MENU_USERS_GRID}" img="new.gif" />
+            <item id="users_group" text="${translator(MENU_USERS)}" img="new.gif">
+                <item id="users_grid" text="${translator(MENU_USERS_GRID)}" img="new.gif" />
                 <item id="users2_grid" text="u2" img="new.gif" />
-                <item id="custom_grid" text="{translator:MENU_CUSTOM_GRID}" img="new.gif" />
+                <item id="custom_grid" text="${translator(MENU_CUSTOM_GRID)}" img="new.gif" />
             </item>
         </main-menu>
     </interface>
@@ -29,4 +29,7 @@
     <templates>
         <include path="templates.xml" />
     </templates>
+    <tags>
+        <include path="tags.xml" />
+    </tags>
 </config>

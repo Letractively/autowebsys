@@ -11,7 +11,7 @@ class WindowRenderer {
     public static function generateXML($name) {
         header('Content-type: text/xml');
         echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        $window = ApplicationManager::getCachedValue(ApplicationManager::WINDOW_DESCRIPTION, $name);
+        $window = ApplicationManager::getCachedValue(ApplicationManager::$WINDOW_DESCRIPTION, $name);
         echo STParser::parse($window);
     }
 
