@@ -3,8 +3,9 @@
 require_once('core/ApplicationManager.php');
 require_once('core/renderers/ModelRenderer.php');
 require_once('core/Logger.php');
+require_once('tags/CustomTag.php');
 
-class TModelsRenderer {
+class TModelsRenderer extends CustomTag {
 
     public function parseModel($params) {
         $out = "";
@@ -13,13 +14,13 @@ class TModelsRenderer {
         $model = ApplicationManager::getCachedValue(ApplicationManager::$DATA_MODEL_SQL, $name);
         switch ($type) {
             case "grid":
-                $out .= ModelRenderer::renderGrid($model, $params['wid']);
+                $out .= ModelRenderer::renderGrid($model, $this->getRequestParam('wid'));
                 break;
             case "form":
                 if (isset($params['id'])) {
-                    $out .= ModelRenderer::renderForm($model, $params['wid'], $params['id']);
+                    $out .= ModelRenderer::renderForm($model, $this->getRequestParam('wid'), $this->getRequestParam('id'));
                 } else {
-                    $out .= ModelRenderer::renderForm($model, $params['wid']);
+                    $out .= ModelRenderer::renderForm($model, $this->getRequestParam('wid'));
                 }
                 break;
             default:
