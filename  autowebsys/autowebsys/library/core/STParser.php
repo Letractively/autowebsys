@@ -6,8 +6,10 @@ require_once('core/Logger.php');
 class STParser {
 
     private static $log_type = "STPARSER";
+    private static $requestParams;
 
-    public static function parse($string, $params = array()) {
+    public static function parse($string, $requestParams = array()) {
+        self::$requestParams = $requestParams;
         Logger::notice(self::$log_type, "parsing:" . $string);
         $out = "";
         $start = 0;
@@ -24,7 +26,7 @@ class STParser {
         return $out;
     }
 
-    private static function parseTag($tag) {
+    private static function parseTag($tag, $params) {
         $startName = 2;
         $endName = strpos($tag, "(");
         $tagName = substr($tag, $startName, $endName - $startName);
@@ -40,6 +42,7 @@ class STParser {
         $className = $xmlModel->class->__toString();
         require_once("tags/" . $className . ".php");
         $object = new $className;
+        $object->setRequestParams(self::$requestParams);
         $method = $xmlModel->method->__toString();
         return $object->$method($params);
     }
