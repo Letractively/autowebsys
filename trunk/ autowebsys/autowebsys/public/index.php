@@ -18,13 +18,6 @@ $application = new Zend_Application(
                 APPLICATION_PATH . '/configs/application.ini'
 );
 
-//require_once 'core/AuthManager.php';
-//require_once 'core/Translator.php';
-//require_once 'core/Logger.php';
-//date_default_timezone_set('Europe/Warsaw');
-//set_error_handler(array(new Logger(), "errorHandler"));
-//$front = Zend_Controller_Front::getInstance();
-//$front->registerPlugin(AuthManager::setAdapter($application->getOption('adapter')), 0);
 require_once 'core/ApplicationManager.php';
 ApplicationManager::initApplication();
 $application->bootstrap();

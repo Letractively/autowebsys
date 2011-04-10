@@ -15,7 +15,19 @@ abstract class CustomTag {
     }
 
     public function getRequestParam($name) {
-        return $this->requestParams[name];
+        return $this->requestParams[$name];
+    }
+
+    public function flatRequestParams() {
+        $out = "";
+        foreach($this->requestParams as $name => $value) {
+            if($out == "") {
+                $out .= "?$name=$value";
+            } else {
+                $out .= "&$name=$value";
+            }
+        }
+        return $out;
     }
 }
 

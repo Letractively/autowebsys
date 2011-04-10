@@ -1,6 +1,6 @@
 <?php
 
-require_once("core/AuthManager.php");
+require_once("core/auth/AuthManager.php");
 require_once("core/Logger.php");
 require_once("core/MemcacheManager.php");
 require_once("core/XMLParser.php");
@@ -20,6 +20,8 @@ class ApplicationManager {
     public static $DATA_MODEL_SQL = "application.models.";
     public static $DATA_TEMPLATE = "application.templates.";
     public static $ST_TAG = "application.tags.";
+    public static $SECURITY_GROUPS = "application.security.groups.";
+    public static $SECURITY_ROLES = "application.security.roles.";
 
     public static function initApplication() {
         date_default_timezone_set('Europe/Warsaw');
@@ -44,6 +46,8 @@ class ApplicationManager {
         self::$DATA_MODEL_SQL = $prefix . self::$DATA_MODEL_SQL;
         self::$DATA_TEMPLATE = $prefix . self::$DATA_TEMPLATE;
         self::$ST_TAG = $prefix . self::$ST_TAG;
+        self::$SECURITY_GROUPS = $prefix . self::$SECURITY_GROUPS;
+        self::$SECURITY_ROLES = $prefix . self::$SECURITY_ROLES;
         Logger::notice(self::$log_type, "Prefix " . $prefix . " set up");
     }
 

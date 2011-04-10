@@ -1,7 +1,7 @@
 <?php
 
 require_once('core/FileManager.php');
-require_once('core/AuthManager.php');
+require_once('core/auth/AuthManager.php');
 require_once('core/Logger.php');
 
 class StreamerController extends Zend_Controller_Action {

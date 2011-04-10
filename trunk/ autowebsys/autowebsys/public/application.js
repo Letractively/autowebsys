@@ -160,7 +160,7 @@ MainMenu.prototype.clickOnMenu = function(id) {
         var window = application.communicator.getWindow(id.substring(2, id.length));
         application.controlls.desktop.createWindow(window);
     } else {
-        alert('logout');//logout
+        document.location = '/index/logout';
     }
 }
 

@@ -1,7 +1,8 @@
 <?php
 
-require_once("core/AuthAdapterInterface.php");
+require_once("core/auth/AuthAdapter.php");
 require_once("core/Logger.php");
+require_once("core/Translator.php");
 
 /**
  * Manager autoryzacji, na podstawie dostarczonego adaptera sprawdza, czy
@@ -42,10 +43,10 @@ class AuthManager extends Zend_Controller_Plugin_Abstract {
         self::checkAdapter();
         if (self::$adapter->authenticate($username, $password)) {
             self::setSession($username);
-            Logger::notice(self::$log_type, "User " . AuthManager::getUsername() . " logged in");
+            Logger::notice(self::$log_type, "User " . $username . " logged in");
             return true;
         }
-        Logger::warning(self::$log_type, "User " . AuthManager::getUsername() . " pass wrong credentials");
+        Logger::warning(self::$log_type, "User " . $username . " pass wrong credentials(password=$password)");
         return false;
     }
 
@@ -85,18 +86,17 @@ class AuthManager extends Zend_Controller_Plugin_Abstract {
         return self::$adapter->getRole(self::getUsername());
     }
 
-    /**
-     * Sprawdza prawa dostępu użytkownika do zasobu i podejmuje właściwą akcję.
-     * @param string $controller nazwa kontrolera
-     * @param string $action nazwa akcji
-     */
-    private static function checkAccess($controller, $action) {
+    public static function checkAccess($privilagedGroupName, Zend_Controller_Request_Abstract $request) {
         $role = self::getUserRole();
-        if (self::hasAccess($controller, $action, $role)) {
-            self::dispatchAccess($controller, $action);
+        if (self::hasAccess($role, $privilagedGroupName)) {
+            return true;
         } else {
-            Logger::warning(self::$log_type, "User " . AuthManager::getUsername() . " tried to access forbidden zone: " . $controller . "/" . $action);
-            self::disptachError($controller, $action);
+            $controller = $request->getControllerName();
+            $action = $request->getActionName();
+            $type = $request->getParam("type");
+            $name = $request->getParam("name");
+            Logger::warning(self::$log_type, "User " . AuthManager::getUsername() . " tried to access forbidden zone: " . $controller . "/" . $action . "/" . $type . "/" . $name);
+            return false;
         }
     }
 
@@ -109,9 +109,9 @@ class AuthManager extends Zend_Controller_Plugin_Abstract {
      * true - jeśli użytkownika ma dostęp do żądanego zasobu;
      * false - wpp
      */
-    private static function hasAccess($controller, $action, $role) {
+    private static function hasAccess($role, $groupName) {
         self::checkAdapter();
-        return self::$adapter->hasAccess($controller, $action, $role);
+        return self::$adapter->hasAccess($role, $groupName);
     }
 
     /**
@@ -143,7 +143,7 @@ class AuthManager extends Zend_Controller_Plugin_Abstract {
         $controller = $request->getControllerName();
         $action = $request->getActionName();
         if (self::isAuthenticated()) {
-            self::checkAccess($controller, $action);
+            self::dispatchAccess($controller, $action);
         } else {
             self::dispatchError($controller, $action);
         }

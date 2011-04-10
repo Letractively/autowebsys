@@ -8,15 +8,16 @@
         </queries>
     </data>
     <parameters>
-        <param name="authAdapter">PublicAdapter</param>
+        <param name="authAdapter">XMLAdapter</param>
         <param name="cache">false</param>
     </parameters>
     <interface>
         <main-menu>
-            <item id="users_group" text="${translator(MENU_USERS)}" img="new.gif">
-                <item id="users_grid" text="${translator(MENU_USERS_GRID)}" img="new.gif" />
-                <item id="users2_grid" text="u2" img="new.gif" />
-                <item id="custom_grid" text="${translator(MENU_CUSTOM_GRID)}" img="new.gif" />
+            <item id="users_group" text="${translator(MENU_USERS)}" img="new.gif" security="members">
+                <item id="users_grid" text="${translator(MENU_USERS_GRID)}" img="new.gif" security="admins" />
+                <item id="tabbar" text="Zakładki" img="new.gif" security="admins" />
+                <item id="users2_grid" text="u2" img="new.gif" security="members" />
+                <item id="custom_grid" text="${translator(MENU_CUSTOM_GRID)}" img="new.gif" security="members" />
             </item>
         </main-menu>
     </interface>
@@ -32,4 +33,7 @@
     <tags>
         <include path="tags.xml" />
     </tags>
+    <security>
+        <include path="security.xml" />
+    </security>
 </config>
