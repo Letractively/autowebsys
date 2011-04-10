@@ -3,6 +3,10 @@
 require_once("core/connectors/DataGridConnector.php");
 
 class MyConnector extends DataGridConnector {
+    
+    public function getTotalCount($query) {
+        return 3;
+    }
 
     public function getIdName($xml) {
         return "id";

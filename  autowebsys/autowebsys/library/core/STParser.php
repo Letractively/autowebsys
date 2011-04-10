@@ -19,7 +19,7 @@ class STParser {
             $endTag = strpos($string, "}", $offset);
             $tag = substr($string, $offset, $endTag - $offset + 1);
             $start = $endTag + 1;
-            $out .= self::parseTag($tag);
+            $out .= self::parseTag($tag, $requestParams);
         }
         $out .= substr($string, $start);
         Logger::notice(self::$log_type, "parsed to: " . $out);

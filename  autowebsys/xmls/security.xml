@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<security>
+    <!-- Strutkura dla adaptera XMLAdapter -->
+    <groups>
+        <group id="members" />
+        <group id="admins" parent="members" />
+    </groups>
+    <roles>
+        <role id="admin" password="dupa123" group="admins" />
+        <role id="guest" password="guest123" group="members" />
+    </roles>
+    
+    <!-- Strutkura dla adaptera DBAdapter -->
+    <!--<db>
+        <groups>
+            <queries>
+                <select>select_users_groups</select>
+                <parent>select_user_group_parent</parent>
+            </queries>
+            <fields>
+                <name></name>
+                <parent></parent>
+            </fields>
+        </groups>
+        <roles>
+            <queries>
+                <select>select_user</select>
+            </queries>
+            <fields>
+                <username></username>
+                <password></password>
+                <group></group>
+            </fields>
+        </roles>
+    </db>-->
+</security>

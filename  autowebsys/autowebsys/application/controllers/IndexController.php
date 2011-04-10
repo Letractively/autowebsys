@@ -1,7 +1,7 @@
 <?php
 
 require_once("core/FileManager.php");
-require_once("core/AuthManager.php");
+require_once("core/auth/AuthManager.php");
 require_once("core/Translator.php");
 
 class IndexController extends Zend_Controller_Action {
@@ -22,7 +22,7 @@ class IndexController extends Zend_Controller_Action {
 
     public function logoutAction() {
         AuthManager::logout();
-        $this->_forward("index");
+        $this->_forward("index", "login");
     }
 
 }

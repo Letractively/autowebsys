@@ -17,7 +17,7 @@ class TModelsRenderer extends CustomTag {
                 $out .= ModelRenderer::renderGrid($model, $this->getRequestParam('wid'));
                 break;
             case "form":
-                if (isset($params['id'])) {
+                if ($this->hasRequestParam('id')) {
                     $out .= ModelRenderer::renderForm($model, $this->getRequestParam('wid'), $this->getRequestParam('id'));
                 } else {
                     $out .= ModelRenderer::renderForm($model, $this->getRequestParam('wid'));
@@ -27,6 +27,19 @@ class TModelsRenderer extends CustomTag {
                 Logger::warning(self::$log_type, "Uknown model type: " . $type);
         }
         return $out;
+    }
+
+    public function parseTag($params) {
+        $tabs = array();
+        foreach($params as $windowID) {
+            $model = XMLParser::getWindowDescription($windowID);
+            $tabs[] = array(
+                "url" => "/data/index/type/window-content/name/" . $windowID . $this->flatRequestParams(),
+                //"url" => "/data/index/type/window-content/name/" . $windowID,
+                "title" => STParser::parse($model->title),
+            );
+        }
+        return ModelRenderer::renderTag($tabs);
     }
 
 }

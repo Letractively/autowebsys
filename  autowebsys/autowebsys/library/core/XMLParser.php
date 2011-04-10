@@ -35,8 +35,35 @@ class XMLParser {
                     'tags' => array(
                         'tag' => 'handleTag',
                     ),
+                    'security' => array(
+                        'groups' => array(
+                            'group' => 'handleGroup',
+                        ),
+                        'roles' => array(
+                            'role' => 'handleRole'
+                        ),
+                    ),
                 ));
         return true;
+    }
+
+    private static function handleGroup($xml) {
+        $group = array('id' => $xml['id']->__toString());
+        if (isset($xml['parent'])) {
+            $group['parent'] = $xml['parent']->__toString();
+        }
+        self::$memcache->set(ApplicationManager::$SECURITY_GROUPS . $xml['id'], $group);
+        Logger::notice(self::$log_type, "Security group " . $xml['id'] . " cached");
+    }
+
+    private static function handleRole($xml) {
+        $group = array(
+            'id' => $xml['id']->__toString(),
+            'group' => $xml['group']->__toString(),
+            'password' => $xml['password']->__toString(),
+        );
+        self::$memcache->set(ApplicationManager::$SECURITY_ROLES . $xml['id'], $group);
+        Logger::notice(self::$log_type, "Security role " . $xml['id'] . " cached");
     }
 
     private static function handleTemplate($xml) {
@@ -93,8 +120,7 @@ class XMLParser {
     }
 
     private static function handleMainmenu($xml) {
-        $menu = MainMenuRenderer::renderMenu($xml[0]);
-        self::$memcache->set(ApplicationManager::$INTERFACE_MAINMENU, $menu);
+        self::$memcache->set(ApplicationManager::$INTERFACE_MAINMENU, $xml->asXML());
         Logger::notice(self::$log_type, "Mainmenu cached");
     }
 
@@ -158,6 +184,20 @@ class XMLParser {
         } else {
             return call_user_func_array($aCallable, $parameters);
         }
+    }
+
+    public static function xmlStringAsObject($xmlString) {
+        return simplexml_load_string($xmlString);
+    }
+
+    public static function getModel($modelName) {
+        $model = ApplicationManager::getCachedValue(ApplicationManager::$DATA_MODEL_SQL, $modelName);
+        return simplexml_load_string($model);
+    }
+
+    public static function getWindowDescription($modelName) {
+        $model = ApplicationManager::getCachedValue(ApplicationManager::$WINDOW_DESCRIPTION, $modelName);
+        return simplexml_load_string($model);
     }
 
 }

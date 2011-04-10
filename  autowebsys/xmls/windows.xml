@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <windows>
+    <window id="tabbar">
+        <title>zakladki</title>
+        <security>members</security>
+        <height>800</height>
+        <content>
+            <html>${tabbar(users_grid,users2_grid)}</html>
+        </content>
+    </window>
     <window id="users_grid">
         <title>${translator(WINDOW_USERS_GRID)}</title>
+        <security>admins</security>
         <pos_x>100</pos_x>
         <height>500</height>
         <content>
@@ -9,6 +18,7 @@
         </content>
     </window>
         <window id="users2_grid">
+        <security>members</security>
         <title>u2</title>
         <pos_x>100</pos_x>
         <height>500</height>
@@ -17,6 +27,7 @@
         </content>
     </window>
     <window id="custom_grid">
+        <security>members</security>
         <title>${translator(WINDOW_CUSTOM_GRID)}</title>
         <pos_x>100</pos_x>
         <height>500</height>
@@ -25,6 +36,7 @@
         </content>
     </window>
     <window id="user_edit">
+        <security>members</security>
         <title>${translator(WINDOW_USER_EDIT)}</title>
         <pos_y>0</pos_y>
         <height>300</height>
@@ -32,7 +44,8 @@
             <html>${model(form, user_edit_form)}</html>
         </content>
     </window>
-        <window id="user2_edit">
+    <window id="user2_edit">
+        <security>members</security>
         <title>f</title>
         <pos_y>0</pos_y>
         <height>300</height>

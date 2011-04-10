@@ -2,6 +2,7 @@
 
 require_once('core/renderers/structures/Grid.php');
 require_once('core/renderers/structures/Form.php');
+require_once('core/renderers/structures/Tabbar.php');
 require_once('core/renderers/WindowRenderer.php');
 require_once('core/STParser.php');
 
@@ -9,14 +10,14 @@ class ModelRenderer {
 
     private static $log_type = "MODEL_RENDERER";
 
-    private static function buildDiv($id, $style) {
+    private static function buildDiv($id, $style = "width: 100%; height: 100%;") {
         return "<div id=\"$id\" style=\"$style\"></div>";
     }
 
-    private static function adjustSizeToFullHeight($id) {
+    private static function adjustSizeToFullHeight($id, $offset = 30) {
         $out = "";
         $out .= "var el = document.getElementById('$id');";
-        $out .= "el.style.height = (el.offsetHeight - 30) + 'px';";
+        $out .= "el.style.height = (el.offsetHeight - $offset) + 'px';";
         return $out;
     }
 
@@ -26,6 +27,45 @@ class ModelRenderer {
 
     private static function closeScript() {
         return "</script>";
+    }
+
+    public static function renderTag($windows) {
+        $out = "";
+        $tab = new Tabbar($windows);
+        $out .= self::buildDiv($tab->name);
+        $out .= self::openScript();
+        $out .= self::adjustSizeToFullHeight($tab->name, 0);
+        $out .= self::initTab($tab->name);
+        $out .= self::addTabs($tab);
+        $out .= self::closeScript();
+        return $out;
+    }
+
+    private static function initTab($name) {
+        $out = "$name = new dhtmlXTabBar('$name','top');";
+        $out .= "$name.setImagePath('/dhtmlx/imgs/');";
+        $out .= "$name.setSkin('dhx_skyblue');";
+        $out .= "$name.setHrefMode('ajax-html');";
+        return $out;
+    }
+
+    private static function addTabs($tab) {
+        $name = $tab->name;
+        $out = "";
+        foreach ($tab->windows as $window) {
+            $title = $window['title'];
+            $url = $window['url'];
+            $id = WindowRenderer::getUID();
+            if ($out == "") {
+                $out .= "$name.addTab('$id','$title', '100px');";
+                $out .= "$name.setContentHref('$id','$url');";
+                $out .= "$name.setTabActive('$id');";
+            } else {
+                $out .= "$name.addTab('$id','$title', '100px');";
+                $out .= "$name.setContentHref('$id','$url');";
+            }
+        }
+        return $out;
     }
 
     private static function buildTaskbarDiv($grid) {
@@ -80,7 +120,7 @@ class ModelRenderer {
 
     private static function addValidators($processorName, $validators) {
         $out = "";
-        if (isset($validators)) {
+        if (isset($validators) && $validators->count > 0) {
             foreach ($validators->children() as $validator) {
                 $index = $validator->index;
                 $function = $validator->function;

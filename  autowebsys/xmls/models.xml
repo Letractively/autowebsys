@@ -2,6 +2,7 @@
 <models>
     <model>
         <name>custom_grid</name>
+        <security>members</security>
         <type>cc</type>
         <cc>
             <className>MyConnector</className>
@@ -17,6 +18,7 @@
     </model>
     <model>
         <name>users_grid</name>
+        <security>admins</security>
         <type>sql</type>
         <sql>
             <select>user_select</select>
@@ -73,6 +75,7 @@
     </model>
     <model>
         <name>user_edit_form</name>
+        <security>admins</security>
         <type>sql</type>
         <template>user_form_template</template>
         <sql>
@@ -86,6 +89,7 @@
     </model>
     <model>
         <name>users2_grid</name>
+        <security>members</security>
         <type>sql</type>
         <sql>
             <select>user2_select</select>
@@ -95,7 +99,7 @@
             <columns>b</columns>
         </sql>
         <js>
-            <setHeader>b</setHeader>
+            <setHeader>'b'</setHeader>
         </js>
         <taskbar>
             <add>
@@ -113,6 +117,7 @@
     </model>
     <model>
         <name>user2_edit_form</name>
+        <security>members</security>
         <type>sql</type>
         <template>user2_form_template</template>
         <sql>

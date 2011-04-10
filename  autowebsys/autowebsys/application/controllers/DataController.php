@@ -14,22 +14,28 @@ class DataController extends Zend_Controller_Action {
         $type = $this->_getParam("type");
         $subType = $this->_getParam("subtype");
         $name = $this->_getParam("name");
-
         switch ($type) {
             case "main-menu":
-                MainMenuRenderer::generateXML();
+                MainMenuRenderer::generateXML($this->getRequest());
                 break;
             case "window-description":
-                WindowRenderer::generateXML($name);
+                $model = XMLParser::getWindowDescription($name);
+                if (AuthManager::checkAccess($model->security, $this->getRequest())) {
+                    WindowRenderer::generateXML($name);
+                }
                 break;
             case "window-content":
-                $window = ApplicationManager::getCachedValue(ApplicationManager::$WINDOW_CONTENT, $name);
-                echo STParser::parse($window, $this->_getAllParams());
+                $model = XMLParser::getWindowDescription($name);
+                if (AuthManager::checkAccess($model->security, $this->getRequest())) {
+                    $window = ApplicationManager::getCachedValue(ApplicationManager::$WINDOW_CONTENT, $name);
+                    echo STParser::parse($window, $this->_getAllParams());
+                }
                 break;
             case "model":
-                $model = ApplicationManager::getCachedValue(ApplicationManager::$DATA_MODEL_SQL, $name);
-                $xmlModel = simplexml_load_string($model);
-                $this->renderObject($xmlModel);
+                $model = XMLParser::getModel($name);
+                if (AuthManager::checkAccess($model->security, $this->getRequest())) {
+                    $this->renderObject($model);
+                }
                 break;
             case "unique":
                 $this->checkUnique($name, $this->_getParam("idname"), $this->_getParam("idvalue"));
@@ -86,7 +92,7 @@ class DataController extends Zend_Controller_Action {
     }
 
     private function getSQLClassName($subtype) {
-        switch($subtype) {
+        switch ($subtype) {
             case "grid":
                 return "SQLGridConnector";
             case "form":
