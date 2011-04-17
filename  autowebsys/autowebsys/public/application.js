@@ -274,16 +274,20 @@ Register.prototype.get = function(type, name) {
     return (this.register[type])[name];
 }
 
-/**
- * Jak przy zamknieciu okna usunac tabelke z rejestru ?
- */
+//TODO: Jak przy zamknieciu okna usunac tabelke z rejestru ?
 Register.prototype.del = function(type, id) {
     (this.register[type])[id] = undefined;
 }
 
 Register.prototype.refresh = function(type) {
     for(var item in this.register[type]) {
-        var grid = (this.register[type])[item];
-        grid.clearAndLoad(grid.url);
+        try {
+            var grid = (this.register[type])[item];
+            grid.clearAll();
+            grid.load(grid.url);
+        }catch(e) {
+        //na wypadek gdyby tabelka istniaja w rejestrze ale zniknal
+        //element html, np z powodu zamkniecia/przeladowania okna
+        }
     }
 }

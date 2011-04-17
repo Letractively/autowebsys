@@ -22,6 +22,8 @@ class ApplicationManager {
     public static $ST_TAG = "application.tags.";
     public static $SECURITY_GROUPS = "application.security.groups.";
     public static $SECURITY_ROLES = "application.security.roles.";
+    public static $SECURITY_DB = "application.security.groups.";
+    public static $CUSTOM_CONTROLLER = "application.controllers.";
 
     public static function initApplication() {
         date_default_timezone_set('Europe/Warsaw');
@@ -48,6 +50,7 @@ class ApplicationManager {
         self::$ST_TAG = $prefix . self::$ST_TAG;
         self::$SECURITY_GROUPS = $prefix . self::$SECURITY_GROUPS;
         self::$SECURITY_ROLES = $prefix . self::$SECURITY_ROLES;
+        self::$CUSTOM_CONTROLLER = $prefix . self::$CUSTOM_CONTROLLER;
         Logger::notice(self::$log_type, "Prefix " . $prefix . " set up");
     }
 

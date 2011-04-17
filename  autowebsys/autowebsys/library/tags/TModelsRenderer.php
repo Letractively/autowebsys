@@ -12,30 +12,38 @@ class TModelsRenderer extends CustomTag {
         $type = $params[0];
         $name = $params[1];
         $model = ApplicationManager::getCachedValue(ApplicationManager::$DATA_MODEL_SQL, $name);
+        $wid = $this->getRequestParam('wid');
+        //przy przepisywaniu argumentow wid sie dubluje, zazwyczaj chodzi o
+        //nowe okno, czyli wiekszy wid
+        if(is_array($wid)) {
+            $wid = $wid[0] > $wid[1] ? $wid[0] : $wid[1];
+        }
         switch ($type) {
             case "grid":
-                $out .= ModelRenderer::renderGrid($model, $this->getRequestParam('wid'));
+                $out .= ModelRenderer::renderGrid($model, $wid, $this->getRequestParams());
                 break;
             case "form":
                 if ($this->hasRequestParam('id')) {
-                    $out .= ModelRenderer::renderForm($model, $this->getRequestParam('wid'), $this->getRequestParam('id'));
+                    $out .= ModelRenderer::renderForm($model, $wid, $this->getRequestParam('id'), $this->getRequestParams());
                 } else {
-                    $out .= ModelRenderer::renderForm($model, $this->getRequestParam('wid'));
+                    $out .= ModelRenderer::renderForm($model, $wid, 0, $this->getRequestParams());
                 }
                 break;
+            case "combo":
+                $out .= ModelRenderer::renderCombo($model, $params[2]);
+                break;
             default:
-                Logger::warning(self::$log_type, "Uknown model type: " . $type);
+                Logger::warning("MODEL_RENDERER", "Uknown model type: " . $type);
         }
         return $out;
     }
 
-    public function parseTag($params) {
+    public function parseTabbar($params) {
         $tabs = array();
         foreach($params as $windowID) {
             $model = XMLParser::getWindowDescription($windowID);
             $tabs[] = array(
-                "url" => "/data/index/type/window-content/name/" . $windowID . $this->flatRequestParams(),
-                //"url" => "/data/index/type/window-content/name/" . $windowID,
+                "url" => "/data/index/type/window-content/name/" . $windowID . $this->flatRequestParams($this->getRequestParams()),
                 "title" => STParser::parse($model->title),
             );
         }

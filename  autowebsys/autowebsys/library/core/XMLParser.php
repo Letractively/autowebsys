@@ -42,9 +42,23 @@ class XMLParser {
                         'roles' => array(
                             'role' => 'handleRole'
                         ),
+                        'db' => 'handleSecurityDB'
+                    ),
+                    'controllers' => array(
+                        'controller' => 'handleController'
                     ),
                 ));
         return true;
+    }
+
+    private static function handleSecurityDB($xml) {
+        self::$memcache->set(ApplicationManager::$SECURITY_DB, $xml->asXML());
+        Logger::notice(self::$log_type, "Security DB settings cached");
+    }
+
+    private static function handleController($xml) {
+        self::$memcache->set(ApplicationManager::$CUSTOM_CONTROLLER . $xml->name, $xml->asXML());
+        Logger::notice(self::$log_type, "Custom controller " . $xml->name . " cached");
     }
 
     private static function handleGroup($xml) {
@@ -67,19 +81,16 @@ class XMLParser {
     }
 
     private static function handleTemplate($xml) {
-        $template = array();
         self::$memcache->set(ApplicationManager::$DATA_TEMPLATE . $xml->name, $xml->asXML());
         Logger::notice(self::$log_type, "Template " . $xml->name . " cached");
     }
 
     private static function handleTag($xml) {
-        $template = array();
         self::$memcache->set(ApplicationManager::$ST_TAG . $xml->name, $xml->asXML());
         Logger::notice(self::$log_type, "Tag " . $xml->name . " cached");
     }
 
     private static function handleModel($xml) {
-        $model = array();
         self::$memcache->set(ApplicationManager::$DATA_MODEL_SQL . $xml->name, $xml->asXML());
         Logger::notice(self::$log_type, "Model " . $xml->name . " cached");
     }

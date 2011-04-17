@@ -72,7 +72,17 @@ class ModelRenderer {
         return (isset($grid->xml->taskbar) ? self::buildDiv($grid->taskbarName, "width: 100%; height: 30px;") : "");
     }
 
-    private static function addButtons($toolbarName, $xml) {
+    private static function renameParameters($parametersXML, $parameters) {
+        foreach ($parametersXML->children() as $rename) {
+            $name = $rename['from']->__toString();
+            $value = $parameters[$name];
+            unset($parameters[$name]);
+            $parameters[$rename['to']->__toString()] = $value;
+        }
+        return CustomTag::flatRequestParams($parameters);
+    }
+
+    private static function addButtons($toolbarName, $xml, $parameters) {
         $out = "";
         foreach ($xml->children() as $button) {
             $buttonName = $button->getName();
@@ -85,20 +95,25 @@ class ModelRenderer {
                     $out .= "$toolbarName.addButton('$buttonName', null, '$label', 'new.gif', 'new.gif');";
                     if (isset($button->window)) {
                         $window = $button->window;
-                        $out .= "$toolbarName.$buttonName" . "Window = '$window';";
+                        if (isset($button->parameters)) {
+                            $parameters = self::renameParameters($button->parameters, $parameters);
+                            $out .= "$toolbarName.$buttonName" . "Window = '$window' + '$parameters';";
+                        } else {
+                            $out .= "$toolbarName.$buttonName" . "Window = '$window';";
+                        }
                     }
             }
         }
         return $out;
     }
 
-    private static function buildTaskbar($grid, $taskbarName, $type) {
+    private static function buildTaskbar($grid, $taskbarName, $type, $parameters) {
         $out = "";
         if (isset($grid->xml->taskbar)) {
             $out .= "var $taskbarName = new dhtmlXToolbarObject('$taskbarName');";
             $out .= "$taskbarName.attachEvent('onClick', application.controlls.desktop.toolbarAction);";
             $out .= "$taskbarName.setIconsPath('/imgs/');";
-            $out .= self::addButtons($taskbarName, $grid->xml->taskbar);
+            $out .= self::addButtons($taskbarName, $grid->xml->taskbar, $parameters);
         }
         return $out;
     }
@@ -147,12 +162,13 @@ class ModelRenderer {
         return $out;
     }
 
-    private static function initGrid($gridName, $gridType) {
+    private static function initGrid($gridName, $gridType, $parameters) {
+        $parameters = CustomTag::flatRequestParams($parameters);
         $out = "";
         $out .= "$gridName.init();";
         $out .= "$gridName.setAwaitedRowHeight(20);";
         $out .= "$gridName.enableSmartRendering(true, 100);";
-        $out .= "$gridName.url = '/data/index/type/model/subtype/grid/name/$gridType';";
+        $out .= "$gridName.url = '/data/index/type/model/subtype/grid/name/$gridType' + '$parameters';";
         $out .= "$gridName.loadXML($gridName.url);";
         return $out;
     }
@@ -189,14 +205,14 @@ class ModelRenderer {
         return $out;
     }
 
-    public static function renderSQLGrid($xml, $wid) {
+    public static function renderSQLGrid($xml, $wid, $parameters) {
         $grid = new Grid($xml);
         $out = "";
         $out .= self::buildTaskbarDiv($grid);
         $out .= self::buildDiv($grid->name, "width: 100%; height: 100%;");
         $out .= self::openScript();
         $out .= self::adjustSizeToFullHeight($grid->name);
-        $out .= self::buildTaskbar($grid, $grid->taskbarName, $grid->type);
+        $out .= self::buildTaskbar($grid, $grid->taskbarName, $grid->type, $parameters);
         $out .= self::buildGrid($grid->name);
         $out .= self::addEvents($grid->name);
         $out .= self::pinGridToTaskbar($grid, $grid->taskbarName, $grid->name);
@@ -204,7 +220,7 @@ class ModelRenderer {
         $out .= self::addValidators($grid->processorName, $grid->xml->validators);
         $out .= self::pinProcessorToTaskbar($grid, $grid->processorName, $grid->taskbarName);
         $out .= self::parseGridJS($grid->name, $grid->xml->js);
-        $out .= self::initGrid($grid->name, $grid->type);
+        $out .= self::initGrid($grid->name, $grid->type, $parameters);
         $out .= self::addMessages($grid->xml->internationalization, $grid->name);
         $out .= self::setNames($grid->name, $grid->type);
         $out .= self::register($grid->type, $grid->name);
@@ -212,13 +228,13 @@ class ModelRenderer {
         return $out;
     }
 
-    public static function renderGrid($xml, $wid) {
+    public static function renderGrid($xml, $wid, $parameters) {
         $grid = new Grid($xml);
         Logger::notice(self::$log_type, "Rendering grid: " . $grid->type);
         switch ($grid->xml->type) {
             case "cc":
             case "sql":
-                return self::renderSQLGrid($xml, $wid);
+                return self::renderSQLGrid($xml, $wid, $parameters);
                 break;
             default:
                 Logger::warning(self::$log_type, "Unknown model type: " . $grid->xml->type);
@@ -283,24 +299,24 @@ class ModelRenderer {
         return $out;
     }
 
-    private static function renderInputs($xml) {
+    private static function renderInputs($xml, $parameters) {
         $string = $xml->asXML();
         $string = substr($string, 6, count($string) - 8);
-        return STParser::parse($string);
+        return STParser::parse($string, $parameters);
     }
 
-    public static function renderForm($xml, $wid, $id = 0) {
+    public static function renderForm($xml, $wid, $id = 0, $parameters = array()) {
         $form = new Form($xml);
         Logger::notice(self::$log_type, "Rendering form: " . $form->name . ", id=" . $id);
         if ($form->xml->type == "sql") {
-            return ModelRenderer::renderSQLForm($form, $id, $wid);
+            return ModelRenderer::renderSQLForm($form, $id, $wid, $parameters);
         }
     }
 
-    private static function renderSQLForm($form, $id, $wid) {
+    private static function renderSQLForm($form, $id, $wid, $parameters) {
         $out = "";
         $out .= self::openForm($form->name);
-        $out .= self::renderInputs($form->template->html);
+        $out .= self::renderInputs($form->template->html, $parameters);
         $out .= self::closeForm();
         $out .= self::openScript();
         $out .= self::createForm($form->name);
@@ -315,6 +331,13 @@ class ModelRenderer {
         $out .= self::closeFormEventAfterUpdate();
         $out .= self::closeScript();
         return $out;
+    }
+
+    public static function renderCombo($model, $bind) {
+        $model = XMLParser::xmlStringAsObject($model);
+        $name = $model->name->__toString();
+        Logger::notice(self::$log_type, "Rendering combo: " . $name);
+        return "<select connector=\"/data/index/type/model/subtype/combo/name/$name\" bind=\"$bind\"></select>";
     }
 
 }

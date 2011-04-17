@@ -22,7 +22,7 @@ class SQLGridConnector extends DataGridConnector {
     }
 
     public function getTotalCount($query) {
-        $query = "SELECT count(*) as 'i' FROM ($query) as q;";
+        $query = "SELECT count(*) as i FROM ($query) as q;";
         $row = DBManager::fetchRow($query);
         Logger::notice("SQLGridConnector", "Counting rows: $query - $row->i");
         return $row->i;
@@ -36,9 +36,10 @@ class SQLGridConnector extends DataGridConnector {
         return explode(",", $xml->sql->columns);
     }
 
-    protected function getData() {
+    protected function getData($parameters) {
         $query = ApplicationManager::getCachedValue(ApplicationManager::$DB_QUERY, $this->model->sql->select->__toString());
         $query = $this->addFilters($query);
+        $query = $this->checkForParameters($query, $parameters);
         $this->totalCount = $this->getTotalCount($query);
         $query = $this->addSortOrder($query);
         $query = $this->addLimit($query);
@@ -52,9 +53,7 @@ class SQLGridConnector extends DataGridConnector {
         if (count($this->filters) > 0) {
             $query .= " WHERE ";
             foreach ($this->filters as $key => $value) {
-                if ($value != "") {
-                    $query .= "$columns[$key] LIKE '%$value%' AND ";
-                }
+                $query .= "q.$columns[$key] LIKE '$value%' AND ";
             }
             $query = substr($query, 0, -4);
         }
@@ -65,13 +64,13 @@ class SQLGridConnector extends DataGridConnector {
         if (isset($this->sortColumn) && isset($this->sortOrder)) {
             $columns = explode(",", $this->model->sql->columns->__toString());
             $columnName = $columns[$this->sortColumn];
-            return $query . " ORDER BY $columnName $this->sortOrder";
+            return $query . " ORDER BY q.$columnName $this->sortOrder";
         }
         return $query;
     }
 
     private function addLimit($query) {
-        return $query . " LIMIT $this->posStart, $this->count";
+        return $query . " LIMIT $this->count OFFSET $this->posStart";
     }
 
 }
