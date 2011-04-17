@@ -12,7 +12,8 @@ class SQLFormConnector extends DataFormConnector {
 
     public function inserted($xml, $data) {
         $queryName = $xml->sql->insert->__toString();
-        return DBManager::insert($queryName, $data);
+        $sequenceName = $xml->sql->sequence->__toString();
+        return DBManager::insert($queryName, $sequenceName, $data);
     }
 
     public function updated($xml, $data) {

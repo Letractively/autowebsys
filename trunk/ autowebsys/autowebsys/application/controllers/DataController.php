@@ -53,7 +53,6 @@ class DataController extends Zend_Controller_Action {
         $xmlModel = simplexml_load_string($model);
         $connectorObject = $this->getConnectorObject($xmlModel);
         $requestId = $this->_getParam("ids", null);
-        $idName = $connectorObject->getIdName($xmlModel);
         $values = $this->getValues($type, $xmlModel, $connectorObject, $requestId);
         $state = $this->_getParam($requestId . "_!nativeeditor_status");
         $idValue = $connectorObject->$state($xmlModel, $values);
@@ -73,7 +72,7 @@ class DataController extends Zend_Controller_Action {
 
     private function renderObject($xml) {
         $instance = $this->getConnectorObject($xml);
-        $instance->parseRequest($_GET, $xml);
+        $instance->parseRequest($this->_getAllParams(), $xml);
     }
 
     private function getConnectorObject($xml) {
@@ -97,6 +96,8 @@ class DataController extends Zend_Controller_Action {
                 return "SQLGridConnector";
             case "form":
                 return "SQLFormConnector";
+            case "combo":
+                return "SQLComboConnector";
             default:
                 Logger::warning(self::$log_type, "Unknown modelsub type: " . $subtype);
         }
@@ -116,14 +117,14 @@ class DataController extends Zend_Controller_Action {
                 break;
             case "form":
                 if ($this->_getParam($id . "_" . $idName) != 0) {
-                    $values["$idName"] = $this->_getParam($idName);
+                    $values["$idName"] = $this->_getParam($id . "_" . $idName);
                     $this->_setParam($id . "_!nativeeditor_status", "updated");
                 } else {
                     unset($_POST[$id . "_" . $idName]);
                 }
                 foreach ($_POST as $key => $value) {
                     if ($key != "ids" && $key != $id . "_!nativeeditor_status") {
-                        $key = substr($key, strrpos($key, "_") + 1);
+                        $key = substr($key, strpos($key, "_") + 1);
                         $values["$key"] = $value;
                     }
                 }

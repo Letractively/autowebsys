@@ -40,10 +40,11 @@ class DBManager {
         Logger::notice(self::$log_type, "SQL executed: " . $statement->queryString);
     }
 
-    public static function insert($queryName, $parameters = array()) {
+    public static function insert($queryName, $sequenceName, $parameters = array()) {
         self::getConnector()->beginTransaction();
         self::execute($queryName, $parameters);
-        $id = self::getConnector()->lastInsertId();
+        $id = self::getConnector()->lastInsertId($sequenceName);
+        Logger::notice(self::$log_type, "Last inserted ID: " . $id . ", from sequence: " . $sequenceName);
         self::getConnector()->commit();
         return $id;
     }

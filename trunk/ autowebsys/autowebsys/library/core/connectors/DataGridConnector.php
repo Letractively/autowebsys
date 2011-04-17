@@ -12,7 +12,7 @@ abstract class DataGridConnector extends DataConnector {
     protected $count = 100;
     protected $model;
 
-    abstract protected function getData();
+    abstract protected function getData($parameters);
 
     abstract public function getIdName($xml);
 
@@ -41,7 +41,7 @@ abstract class DataGridConnector extends DataConnector {
         $this->count = (isset($parameters["count"]) ? $parameters["count"] : 1000);
         $this->model = $model;
         $start = time();
-        $data = $this->getData();
+        $data = $this->getData($parameters);
         $end = time() - $start;
         $modelName = $this->model->name;
         Logger::notice("DataGridConnector", "Data from $modelName loaded in $end ms");

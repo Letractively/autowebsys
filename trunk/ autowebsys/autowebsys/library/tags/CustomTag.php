@@ -1,5 +1,7 @@
 <?php
+
 abstract class CustomTag {
+
     private $requestParams;
 
     public function getRequestParams() {
@@ -18,17 +20,19 @@ abstract class CustomTag {
         return $this->requestParams[$name];
     }
 
-    public function flatRequestParams() {
+    public static function flatRequestParams($paramters) {
         $out = "";
-        foreach($this->requestParams as $name => $value) {
-            if($out == "") {
-                $out .= "?$name=$value";
-            } else {
-                $out .= "&$name=$value";
+        foreach ($paramters as $name => $value) {
+            if (self::notRestricted($name)) {
+                $out .= "/$name/$value";
             }
         }
         return $out;
     }
-}
 
+    private static function notRestricted($name) {
+        return!in_array($name, array("controller", "action", "module", "type", "subtype", "name"));
+    }
+
+}
 ?>
