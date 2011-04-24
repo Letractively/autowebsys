@@ -31,7 +31,7 @@ abstract class CustomTag {
     }
 
     private static function notRestricted($name) {
-        return!in_array($name, array("controller", "action", "module", "type", "subtype", "name"));
+        return !in_array($name, array("controller", "action", "module", "type", "subtype", "name"));
     }
 
 }

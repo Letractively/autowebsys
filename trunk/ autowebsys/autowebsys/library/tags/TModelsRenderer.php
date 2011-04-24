@@ -32,6 +32,12 @@ class TModelsRenderer extends CustomTag {
             case "combo":
                 $out .= ModelRenderer::renderCombo($model, $params[2]);
                 break;
+            case "tree":
+                $out .= ModelRenderer::renderTree($model, $this->getRequestParams());
+                break;
+            case "layout":
+                $out .= ModelRenderer::renderLayoutModel($model, $this->getRequestParams());
+                break;
             default:
                 Logger::warning("MODEL_RENDERER", "Uknown model type: " . $type);
         }
@@ -47,7 +53,11 @@ class TModelsRenderer extends CustomTag {
                 "title" => STParser::parse($model->title),
             );
         }
-        return ModelRenderer::renderTag($tabs);
+        return ModelRenderer::renderTab($tabs);
+    }
+
+    public function parseLayout($params) {
+        return STParser::parse(ModelRenderer::renderLayout($params[0], array_slice($params, 1), $this->flatRequestParams($this->getRequestParams())));
     }
 
 }

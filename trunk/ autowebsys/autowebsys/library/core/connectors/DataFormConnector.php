@@ -12,17 +12,11 @@ abstract class DataFormConnector extends DataConnector {
 
     abstract public function getData();
 
-    public function inserted($xml, $data) {
+    abstract public function inserted($xml, $data);
 
-    }
+    abstract public function updated($xml, $data);
 
-    public function updated($xml, $data) {
-
-    }
-
-    public function deleted($xml, $data) {
-
-    }
+    abstract public function deleted($xml, $data);
 
     public function parseRequest($parameters, $model) {
         $this->model = $model;

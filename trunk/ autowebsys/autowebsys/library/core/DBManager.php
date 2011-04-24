@@ -5,15 +5,26 @@ class DBManager {
     private static $dbh;
     private static $log_type = "DB";
 
+    private static function checkForErrors($statement) {
+        $errors =  $statement->errorInfo();
+        if(count($errors) > 0) {
+            Logger::warning(self::$log_type, "Error in statement: " . implode(", ", $errors));
+        } else {
+            Logger::info(self::$log_type, "Statement executed without any errors.");
+        }
+    }
+
     public static function fetchAll($query) {
         $statement = self::getConnector()->prepare($query);
         $statement->execute();
+        self::checkForErrors($statement);
         return $statement->fetchALL(PDO::FETCH_OBJ);
     }
 
     public static function fetchRow($query) {
         $statement = self::getConnector()->prepare($query);
         $statement->execute();
+        self::checkForErrors($statement);
         return $statement->fetch(PDO::FETCH_OBJ);
     }
 
@@ -26,6 +37,7 @@ class DBManager {
             $statement->bindValue(':' . $key, $value);
         }
         $statement->execute();
+        self::checkForErrors($statement);
         return $statement->fetchALL(PDO::FETCH_OBJ);
     }
 
@@ -37,6 +49,7 @@ class DBManager {
             $statement->bindValue(':' . $key, $value);
         }
         $statement->execute();
+        self::checkForErrors($statement);
         Logger::notice(self::$log_type, "SQL executed: " . $statement->queryString);
     }
 

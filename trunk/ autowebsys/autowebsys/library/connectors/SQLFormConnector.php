@@ -23,6 +23,10 @@ class SQLFormConnector extends DataFormConnector {
         return $data["$idName"];
     }
 
+    public function  deleted($xml, $data) {
+        
+    }
+
     public function getData() {
         $queryName = $this->model->sql->select->__toString();
         $idName = $this->getIdName($this->model);
