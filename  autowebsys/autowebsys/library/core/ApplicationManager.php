@@ -71,5 +71,11 @@ class ApplicationManager {
         return $result;
     }
 
+    public static function clearCachedValues() {
+        $memcache = self::getMemcache();
+        $memcache->set(ApplicationManager::$STATUS, 'false');
+        return self::$memcache->get(ApplicationManager::$STATUS);
+    }
+
 }
 ?>

@@ -21,6 +21,10 @@ class SQLGridConnector extends DataGridConnector {
         return $data["$idName"];
     }
 
+    public function inserted($xml, $data) {
+
+    }
+
     public function getTotalCount($query) {
         $query = "SELECT count(*) as i FROM ($query) as q;";
         $row = DBManager::fetchRow($query);
@@ -49,11 +53,13 @@ class SQLGridConnector extends DataGridConnector {
 
     private function addFilters($query) {
         $columns = explode(",", $this->model->sql->columns->__toString());
-        $query = "SELECT * FROM ($query) as q";
+        $query = "SELECT * FROM ($query) as q ";
         if (count($this->filters) > 0) {
-            $query .= " WHERE ";
+            $query .= "WHERE true AND ";
             foreach ($this->filters as $key => $value) {
-                $query .= "q.$columns[$key] LIKE '$value%' AND ";
+                if ($value != "") {
+                    $query .= "q.$columns[$key] LIKE '$value%' AND ";
+                }
             }
             $query = substr($query, 0, -4);
         }

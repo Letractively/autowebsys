@@ -14,9 +14,11 @@ class StreamerController extends Zend_Controller_Action {
             case "getjs":
                 $name = $this->_getParam("name");
                 $this->streamFile(FileManager::getJSPath() . $name, array("Content-type: application/javascript"));
+                break;
             case "getcss":
                 $name = $this->_getParam("name");
                 $this->streamFile(FileManager::getCSSPath() . $name, array("Content-type: text/css"));
+                break;
             default:
                 Logger::warning(self::$log_type, "Unknown action type: " . $type);
         }

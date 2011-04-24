@@ -98,6 +98,8 @@ class DataController extends Zend_Controller_Action {
                 return "SQLFormConnector";
             case "combo":
                 return "SQLComboConnector";
+            case "tree":
+                return "SQLTreeConnector";
             default:
                 Logger::warning(self::$log_type, "Unknown modelsub type: " . $subtype);
         }
@@ -113,6 +115,14 @@ class DataController extends Zend_Controller_Action {
                 for ($c = 0; $c < count($columns); $c++) {
                     $values[$columns[$c]] = $this->_getParam($id . "_c" . $c, null);
                 }
+                return $values;
+                break;
+            case "tree":
+                $values["$idName"] = $id;
+                $column = $connectorObject->getColumnName($xml);
+                $parent = $connectorObject->getParentIdName($xml);
+                $values[$column] = $this->_getParam($id . "_tr" . "_text", null);
+                $values[$parent] = $this->_getParam($id . "_tr" . "_pid", null);
                 return $values;
                 break;
             case "form":

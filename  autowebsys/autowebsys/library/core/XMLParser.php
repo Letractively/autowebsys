@@ -143,7 +143,7 @@ class XMLParser {
         self::$memcache = $memcache;
         $status = self::$memcache->get(ApplicationManager::$STATUS);
         $cache = self::$memcache->get(ApplicationManager::$CACHE);
-        if (!$status || !$cache || $cache == 'false') {
+        if (!$status || !$cache || $cache == 'false' || $status == 'false') {
             Logger::notice(self::$log_type, "Configuration not cached or cache disabled, parsing");
             $start = time();
             if (self::parseRoot(self::getXML("configuration.xml"))) {
@@ -203,6 +203,15 @@ class XMLParser {
 
     public static function getModel($modelName) {
         $model = ApplicationManager::getCachedValue(ApplicationManager::$DATA_MODEL_SQL, $modelName);
+        return simplexml_load_string($model);
+    }
+
+    public static function getXMLModel($modelName) {
+        return ApplicationManager::getCachedValue(ApplicationManager::$DATA_MODEL_SQL, $modelName);
+    }
+
+    public static function getController($modelName) {
+        $model = ApplicationManager::getCachedValue(ApplicationManager::$CUSTOM_CONTROLLER, $modelName);
         return simplexml_load_string($model);
     }
 

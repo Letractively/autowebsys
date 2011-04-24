@@ -18,17 +18,11 @@ abstract class DataGridConnector extends DataConnector {
 
     abstract public function getColumnsNames($xml);
 
-    public function inserted($xml, $data) {
+    abstract public function inserted($xml, $data);
 
-    }
+    abstract public function updated($xml, $data);
 
-    public function updated($xml, $data) {
-
-    }
-
-    public function deleted($xml, $data) {
-
-    }
+    abstract public function deleted($xml, $data);
 
     abstract public function getTotalCount($query);
 

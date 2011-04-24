@@ -69,7 +69,7 @@ Desktop.prototype.setHeight = function(height) {
 
 Desktop.prototype.createWindow = function(window) {
     var uid = utils.generateUID();
-    this.windows[uid] = this.windowsManager.createWindow(uid, window.get('posX'), window.get('posY'), window.get('width'), window.get('height'));
+    this.windows[uid] = this.windowsManager.createWindow(uid, parseInt(window.get('posX')), parseInt(window.get('posY')), parseInt(window.get('width')), parseInt(window.get('height')));
     this.windows[uid].uid = this.uid;
     this.windows[uid].setText(window.get('title'));
     this.windows[uid].windowURL = window.get('content') + '/wid/' + uid;
@@ -85,32 +85,51 @@ Desktop.prototype.createWindow = function(window) {
 Desktop.prototype.toolbarAction = function(id) {
     var window;
     var selectedId;
+    var item = this.subItem;
+    switch(item.awsType) {
+        case "grid":
+            selectedId = item.getSelectedRowId();
+            break;
+        case "tree":
+            selectedId = item.getSelectedItemId();
+            break;
+    }
     switch(id) {
         case "add":
             window = application.communicator.getWindow(this.addWindow);
             application.controlls.desktop.createWindow(window);
             break;
         case "edit":
-            selectedId = this.grid.getSelectedRowId();
             if(selectedId != null) {
                 window = application.communicator.getWindow(this.editWindow + "/id/" + selectedId);
                 application.controlls.desktop.createWindow(window);
             } else {
-                alert(this.grid.notSelectedWarn);
+                alert(item.notSelectedWarn);
             }
             break;
         case "delete":
-            selectedId = this.grid.getSelectedRowId();
             if(selectedId != null) {
-                if(confirm(this.grid.confirmDelete)) {
-                    this.grid.deleteSelectedRows();
+                if(confirm(item.confirmDelete)) {
+                    switch(item.awsType) {
+                        case "grid":
+                            item.deleteSelectedRows();
+                            break;
+                        case "tree":
+                            selectedId = item.getSelectedItemId();
+                            item.deleteItem(selectedId, true);
+                            break;
+                    }
                 }
             } else {
-                alert(this.grid.notSelectedWarn);
+                alert(item.notSelectedWarn);
             }
             break;
         case "refresh":
-            this.grid.clearAndLoad(this.grid.url);
+            if(item.awsType == 'grid') {
+                item.clearAndLoad(item.url);
+            } else if (item.awsType == 'tree') {
+                item.refreshItem();
+            }
             break;
         case "save":
             this.processor.sendData();
@@ -282,9 +301,12 @@ Register.prototype.del = function(type, id) {
 Register.prototype.refresh = function(type) {
     for(var item in this.register[type]) {
         try {
-            var grid = (this.register[type])[item];
-            grid.clearAll();
-            grid.load(grid.url);
+            var item = (this.register[type])[item];
+            if(item.awsType == 'grid') {
+                item.clearAndLoad(item.url);
+            } else if (item.awsType == 'tree') {
+                item.refreshItem();
+            }
         }catch(e) {
         //na wypadek gdyby tabelka istniaja w rejestrze ale zniknal
         //element html, np z powodu zamkniecia/przeladowania okna
