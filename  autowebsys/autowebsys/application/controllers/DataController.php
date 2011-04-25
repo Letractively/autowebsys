@@ -54,6 +54,7 @@ class DataController extends Zend_Controller_Action {
         $connectorObject = $this->getConnectorObject($xmlModel);
         $requestId = $this->_getParam("ids", null);
         $values = $this->getValues($type, $xmlModel, $connectorObject, $requestId);
+        Logger::notice(self::$log_type, "Received values: " . implode(", ", $values));
         $state = $this->_getParam($requestId . "_!nativeeditor_status");
         $idValue = $connectorObject->$state($xmlModel, $values);
         header('Content-type: text/xml');
