@@ -4,6 +4,12 @@ require_once('core/FileManager.php');
 require_once('core/auth/AuthManager.php');
 require_once('core/Logger.php');
 
+/**
+ * Kontroler wysyłający pliki js i css, do których wymagana jest autoryzacja.
+ * Trzeba by wywalić tego switcha
+ * @author Tomasz 'lobo' Kopacki
+ * @email tomasz@kopacki.eu
+ */
 class StreamerController extends Zend_Controller_Action {
 
     private static $log_type = "CONTROLLER_STREAMER";
@@ -11,11 +17,11 @@ class StreamerController extends Zend_Controller_Action {
     public function indexAction() {
         $type = $this->_getParam("type");
         switch ($type) {
-            case "getjs":
+            case "js":
                 $name = $this->_getParam("name");
-                $this->streamFile(FileManager::getJSPath() . $name, array("Content-type: application/javascript"));
+                $this->streamFile(FileManager::getJSPath() . $name, array("Content-type: text/javascript"));
                 break;
-            case "getcss":
+            case "css":
                 $name = $this->_getParam("name");
                 $this->streamFile(FileManager::getCSSPath() . $name, array("Content-type: text/css"));
                 break;
@@ -24,6 +30,12 @@ class StreamerController extends Zend_Controller_Action {
         }
     }
 
+    /**
+     * Funkcja wyrzuca na wyjście plik podany w parametrze z zadanymi
+     * nagłówkami HTTP
+     * @param string $path ścieżka do pliku, który ma być wysłany
+     * @param array $headers nagłówki HTML, które mają być wysłane
+     */
     private function streamFile($path, $headers) {
         if (file_exists($path)) {
             foreach ($headers as $header) {

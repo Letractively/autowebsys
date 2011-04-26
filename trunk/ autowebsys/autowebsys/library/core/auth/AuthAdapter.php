@@ -1,12 +1,10 @@
 <?php
 
 /**
- * Interfejs adaptera autoryzacji. Dokładny opis implementacji dostępny
- * na wikipedi
- * @see http://code.google.com/p/autowebsys/wiki/Autoryzacja
+ * Interfejs adaptera autoryzacji. Każdy projekt musi mieć jakiś, żeby sterować
+ * dostępem. Bez tego nie da się odpalic aplikacji.
  * @author Tomasz 'lobo' Kopacki
  * @email tomasz@kopacki.eu
- * @version 1.2
  */
 abstract class AuthAdapter {
 
@@ -34,22 +32,12 @@ abstract class AuthAdapter {
     }
 
     /**
-     * Zwraca nazwę roli użytkownika
+     * Zwraca rolę użytkownika
      * @param string nazwa użytkownika
      * @return Role funkcja musi zwracac obiekt typu Role lub null dla
      * błednej nazwy użytkownika
      */
     public abstract function getRole($username);
-
-    /**
-     * Funkcja sprawdza czy podany użytkownik należy do grupy
-     * @param string nazwa użytkownika
-     * @param string nazwa grupy
-     * @return boolean
-     * true - jeśli użytkownik należy do grupy
-     * false - wpp
-     */
-    public abstract function isUserInGroup(Role $role, $groupName);
 
 }
 ?>

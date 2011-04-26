@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Encja reprezentująca grupę - dostęp do zasobów określa się za pomocą
+ * hierarchi grup.
+ * @author Tomasz 'lobo' Kopacki
+ * @email tomasz@kopacki.eu
+ */
 class Group {
 
     private $groupName;

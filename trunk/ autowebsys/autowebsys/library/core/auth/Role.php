@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Encja reprezentująca rolę użytkownika.
+ * @author Tomasz 'lobo' Kopacki
+ * @email tomasz@kopacki.eu
+ */
 class Role {
 
     private $username;

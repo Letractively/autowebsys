@@ -20,7 +20,7 @@ class FileManager {
         foreach (self::listFiles($path) as $item) {
             if (is_file($path . $item)) {
                 $item = substr($item, strrchr($item, "/"));
-                $out .= "\t<script type=\"text/javascript\" src=\"/streamer/index/type/getjs/name/$item\"></script>\n";
+                $out .= "\t<script type=\"text/javascript\" src=\"/streamer/index/type/js/name/$item\"></script>\n";
             }
         }
         return $out;
@@ -32,7 +32,7 @@ class FileManager {
         foreach (self::listFiles($path) as $item) {
             if (is_file($path . $item)) {
                 $item = substr($item, strrchr($item, "/"));
-                $out .= "\t<link rel=\"stylesheet\" type=\"text/css\" href=\"/streamer/index/type/getjs/name/$item\" />\n";
+                $out .= "\t<link rel=\"stylesheet\" type=\"text/css\" href=\"/streamer/index/type/css/name/$item\" />\n";
             }
         }
         return $out;

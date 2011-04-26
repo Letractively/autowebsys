@@ -2,6 +2,12 @@
 
 require_once("core/XMLParser.php");
 
+/**
+ * Kontroller sterujący wywoływaniem kontrolerów użytkownika zdefiniowanych
+ * w XML'u. Proste proxy w celu izolacji AWS.
+ * @author Tomasz 'lobo' Kopacki
+ * @email tomasz@kopacki.eu
+ */
 class CustomController extends Zend_Controller_Action {
 
     public function indexAction() {

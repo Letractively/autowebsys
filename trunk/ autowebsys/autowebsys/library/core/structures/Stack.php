@@ -1,4 +1,10 @@
 <?php
+
+/**
+ * Prosta struktura stosu.
+ * @author Tomasz 'lobo' Kopacki
+ * @email tomasz@kopacki.eu
+ */
 class Stack {
     private $array;
     private $index;
