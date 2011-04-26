@@ -79,6 +79,7 @@ Desktop.prototype.createWindow = function(window) {
     this.windows[uid].attachEvent('onMinimize', this.onResizeFinish);
     this.windows[uid].attachEvent('onMaximize', this.onResizeFinish);
     this.windows[uid].attachEvent('onParkUp', this.onParkUp);
+    this.windows[uid].button('stick').show();
     application.controlls.bar.taskbar.addWindow(uid, window.get('title'), window.get('icon'));
 }
 

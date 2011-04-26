@@ -5,10 +5,10 @@ class DBManager {
     private static $dbh;
     private static $log_type = "DB";
 
-    private static function checkForErrors($statement) {
-        $errors =  $statement->errorInfo();
-        if(count($errors) > 0) {
-            Logger::warning(self::$log_type, "Error in statement: " . implode(", ", $errors));
+    private static function checkForErrors($query, $statement) {
+        if($statement->errorCode() != "00000") {
+            $errors =  $statement->errorInfo();
+            Logger::warning(self::$log_type, "Error in statement($query): " . implode(", ", $errors));
         } else {
             Logger::info(self::$log_type, "Statement executed without any errors.");
         }
@@ -17,14 +17,14 @@ class DBManager {
     public static function fetchAll($query) {
         $statement = self::getConnector()->prepare($query);
         $statement->execute();
-        self::checkForErrors($statement);
+        self::checkForErrors($query, $statement);
         return $statement->fetchALL(PDO::FETCH_OBJ);
     }
 
     public static function fetchRow($query) {
         $statement = self::getConnector()->prepare($query);
         $statement->execute();
-        self::checkForErrors($statement);
+        self::checkForErrors($query, $statement);
         return $statement->fetch(PDO::FETCH_OBJ);
     }
 
@@ -37,7 +37,7 @@ class DBManager {
             $statement->bindValue(':' . $key, $value);
         }
         $statement->execute();
-        self::checkForErrors($statement);
+        self::checkForErrors($queryName, $statement);
         return $statement->fetchALL(PDO::FETCH_OBJ);
     }
 
@@ -49,7 +49,7 @@ class DBManager {
             $statement->bindValue(':' . $key, $value);
         }
         $statement->execute();
-        self::checkForErrors($statement);
+        self::checkForErrors($queryName, $statement);
         Logger::notice(self::$log_type, "SQL executed: " . $statement->queryString);
     }
 
