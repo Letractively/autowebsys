@@ -135,8 +135,12 @@ class XMLParser {
         Logger::notice(self::$log_type, "Mainmenu cached");
     }
 
-    private static function getRootFolder() {
-        return APPLICATION_PATH . "/../../xmls/";
+    public static function getRootFolder() {
+        return APPLICATION_PATH . "/../../";
+    }
+
+    public static function getXMLRootFolder() {
+        return self::getRootFolder() . "xmls/";
     }
 
     public static function checkCacheStatus($memcache) {
@@ -156,7 +160,7 @@ class XMLParser {
     }
 
     private static function getXML($path) {
-        $path = self::getRootFolder() . $path;
+        $path = self::getXMLRootFolder() . $path;
         $xml = simplexml_load_file($path);
         if (!$xml) {
             Logger::alert(self::$log_type, "Can't find config file: " . $path);

@@ -2,6 +2,12 @@
 
 require_once('core/Translator.php');
 
+/**
+ * Kontroler obsługi błędów. Można by dorobić jakieś przyjazne komunikaty dla
+ * użytkownika końcowego.
+ * @author Tomasz 'lobo' Kopacki
+ * @email tomasz@kopacki.eu
+ */
 class ErrorController extends Zend_Controller_Action {
 
     public function errorAction() {

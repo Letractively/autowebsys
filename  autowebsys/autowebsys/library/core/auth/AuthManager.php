@@ -10,8 +10,6 @@ require_once("core/Translator.php");
  * pliku konfiguracyjnym.
  * @author Tomasz 'lobo' Kopacki
  * @email tomasz@kopacki.eu
- * @version 1.0
- * @see http://code.google.com/p/autowebsys/wiki/Autoryzacja
  */
 class AuthManager extends Zend_Controller_Plugin_Abstract {
 

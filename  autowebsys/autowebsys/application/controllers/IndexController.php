@@ -4,6 +4,12 @@ require_once("core/FileManager.php");
 require_once("core/auth/AuthManager.php");
 require_once("core/Translator.php");
 
+/**
+ * Główny kontroler sterujący. Plugin autoryzacji steruje dostępem.
+ * Funkcja index rysuje całą aplikację.
+ * @author Tomasz 'lobo' Kopacki
+ * @email tomasz@kopacki.eu
+ */
 class IndexController extends Zend_Controller_Action {
 
     public function indexAction() {

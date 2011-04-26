@@ -7,8 +7,10 @@ abstract class DataConnector {
     public function checkForParameters($query, $parameters) {
         $i = 0;
         while ($i = strpos($query, ":")) {
-            $endOfParameter = strpos($query, " ", $i);
-            $parameter = substr($query, $i, $endOfParameter - $i - 1);
+            $f_possibleEndOfParameter = strpos($query, " ", $i);
+            $s_possibleEndOfParameter = strpos($query, ")", $i);
+            $endOfParameter = min($f_possibleEndOfParameter, $s_possibleEndOfParameter);
+            $parameter = substr($query, $i, $endOfParameter - $i);
             $cleanParameter = substr($parameter, 1);
             $query = str_replace($parameter, $parameters[$cleanParameter], $query);
         }
