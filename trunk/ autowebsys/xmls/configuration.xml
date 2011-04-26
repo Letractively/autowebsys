@@ -2,38 +2,29 @@
 
 <config>
     <data>
-        <datasource url="mysql:host=127.0.0.1;dbname=autowebsys" user="autowebsys" password="AUTO#web.sys" />
+        <datasource url="<connection_string>" user="<user>" password="<password>" />
         <queries>
-            <include path="queries.xml" />
+            
         </queries>
     </data>
     <parameters>
-        <param name="authAdapter">XMLAdapter</param>
-        <param name="cache">false</param>
+        <param name="authAdapter">DBAdapter</param>
+        <param name="cache">true</param>
     </parameters>
     <interface>
         <main-menu>
-            <item id="users_group" text="${translator(MENU_USERS)}" img="new.gif" security="members">
-                <item id="users_grid" text="${translator(MENU_USERS_GRID)}" img="new.gif" security="admins" />
-                <item id="tabbar" text="Zakładki" img="new.gif" security="admins" />
-                <item id="users2_grid" text="u2" img="new.gif" security="members" />
-                <item id="custom_grid" text="${translator(MENU_CUSTOM_GRID)}" img="new.gif" security="members" />
-            </item>
         </main-menu>
     </interface>
     <windows>
-        <include path="windows.xml" />
     </windows>
     <models>
-        <include path="models.xml" />
     </models>
     <templates>
-        <include path="templates.xml" />
     </templates>
     <tags>
-        <include path="tags.xml" />
     </tags>
+    <controllers>
+    </controllers>
     <security>
-        <include path="security.xml" />
     </security>
 </config>
