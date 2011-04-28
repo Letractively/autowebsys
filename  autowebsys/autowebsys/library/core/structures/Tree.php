@@ -13,6 +13,8 @@
  * dostaniemy wszystkiego jego podwęzły. Dodatkowo sortując po 'lft' dostaniemy
  * listę przedstawiającą strukturę 'rozwiniętego' drzewa. Daje nam to możliwość
  * odtworzenia struktury drzewa w czasie liniowym.
+ * @author Tomasz 'lobo' Kopacki
+ * @email tomasz@kopacki.eu
  */
 class Tree {
 
