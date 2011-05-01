@@ -246,26 +246,28 @@ abstract class Zend_Db_Statement implements Zend_Db_Statement_Interface
         }
 
         $position = null;
-        if (($intval = (int) $parameter) > 0 && $this->_adapter->supportsParameters('positional')) {
-            if ($intval >= 1 || $intval <= count($this->_sqlParam)) {
-                $position = $intval;
+        do {
+            if (($intval = (int) $parameter) > 0 && $this->_adapter->supportsParameters('positional')) {
+                if ($intval >= 1 || $intval <= count($this->_sqlParam)) {
+                    $position = $intval;
+                }
+            } else if ($this->_adapter->supportsParameters('named')) {
+                if ($parameter[0] != ':') {
+                    $parameter = ':' . $parameter;
+                }
+                if (in_array($parameter, $this->_sqlParam) !== false) {
+                    $position = $parameter;
+                }
             }
-        } else if ($this->_adapter->supportsParameters('named')) {
-            if ($parameter[0] != ':') {
-                $parameter = ':' . $parameter;
-            }
-            if (in_array($parameter, $this->_sqlParam) !== false) {
-                $position = $parameter;
-            }
-        }
 
-        if ($position === null) {
-            /**
-             * @see Zend_Db_Statement_Exception
-             */
-            require_once 'Zend/Db/Statement/Exception.php';
-            throw new Zend_Db_Statement_Exception("Invalid bind-variable position '$parameter'");
-        }
+//        if ($position === null) {
+//            /**
+//             * @see Zend_Db_Statement_Exception
+//             */
+//            require_once 'Zend/Db/Statement/Exception.php';
+//            throw new Zend_Db_Statement_Exception("Invalid bind-variable position '$parameter'");
+//        }
+        } while($position !== null);
 
         // Finally we are assured that $position is valid
         $this->_bindParam[$position] =& $variable;
