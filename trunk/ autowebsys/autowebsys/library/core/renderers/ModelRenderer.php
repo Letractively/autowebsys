@@ -299,7 +299,8 @@ class ModelRenderer {
         return "$processorName.form = $formName;";
     }
 
-    private static function parseFormJS($js) {
+    private static function parseFormJS($js, $parameters) {
+        $js = STParser::parse($js, $parameters);
         if (isset($js)) {
             return "$js;";
         }
@@ -344,7 +345,7 @@ class ModelRenderer {
         $out .= self::pinFormToProcessor($form->processorName, $form->name);
         $out .= self::addSaveEvent($form->name, $form->processorName, $id);
         $out .= self::openFormEventAfterUpdate($form->processorName);
-        $out .= self::parseFormJS($form->xml->onSave);
+        $out .= self::parseFormJS($form->xml->onSave, $parameters);
         $out .= self::refreshForm($wid);
         $out .= self::closeFormEventAfterUpdate();
         $out .= self::closeScript();

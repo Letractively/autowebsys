@@ -159,6 +159,11 @@ Desktop.prototype.refreshWindow = function(wid) {
     window.attachURL(window.windowURL, true);
 }
 
+Desktop.prototype.closeWindow = function(wid) {
+    var window = application.controlls.desktop.windows[wid];
+    window.close();
+}
+
 Desktop.prototype.getWindowURL = function(wid) {
     return (application.controlls.desktop.windows[wid]).windowURL;
 }

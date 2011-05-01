@@ -6,8 +6,9 @@ class DBManager {
     private static $log_type = "DB";
 
     private static function checkForErrors($query, $statement) {
-        if($statement->errorCode() != "00000") {
-            $errors =  $statement->errorInfo();
+        $query = STParser::parse($query);
+        if ($statement->errorCode() != "00000") {
+            $errors = $statement->errorInfo();
             Logger::warning(self::$log_type, "Error in statement($query): " . implode(", ", $errors));
         } else {
             Logger::info(self::$log_type, "Statement executed without any errors.");
@@ -15,6 +16,7 @@ class DBManager {
     }
 
     public static function fetchAll($query) {
+        $query = STParser::parse($query);
         $statement = self::getConnector()->prepare($query);
         $statement->execute();
         self::checkForErrors($query, $statement);
@@ -22,6 +24,7 @@ class DBManager {
     }
 
     public static function fetchRow($query) {
+        $query = STParser::parse($query);
         $statement = self::getConnector()->prepare($query);
         $statement->execute();
         self::checkForErrors($query, $statement);
@@ -30,6 +33,7 @@ class DBManager {
 
     public static function getData($queryName, $parameters = array()) {
         $query = ApplicationManager::getCachedValue(ApplicationManager::$DB_QUERY, $queryName);
+        $query = STParser::parse($query);
         Logger::notice(self::$log_type, "Getting data from named query: " . $query);
         $statement = self::getConnector()->prepare($query);
         foreach ($parameters as $key => $value) {
@@ -43,6 +47,7 @@ class DBManager {
 
     public static function execute($queryName, $parameters = array()) {
         $query = ApplicationManager::getCachedValue(ApplicationManager::$DB_QUERY, $queryName);
+        $query = STParser::parse($query);
         $statement = self::getConnector()->prepare($query);
         foreach ($parameters as $key => $value) {
             Logger::notice(self::$log_type, "Binding: :" . $key . "=" . $value);
