@@ -100,14 +100,14 @@ Desktop.prototype.toolbarAction = function(id) {
             window = application.communicator.getWindow(this.addWindow);
             application.controlls.desktop.createWindow(window);
             break;
-        case "edit":
-            if(selectedId != null) {
-                window = application.communicator.getWindow(this.editWindow + "/id/" + selectedId);
-                application.controlls.desktop.createWindow(window);
-            } else {
-                alert(item.notSelectedWarn);
-            }
-            break;
+        //        case "edit":
+        //            if(selectedId != null) {
+        //                window = application.communicator.getWindow(this.editWindow + "/id/" + selectedId);
+        //                application.controlls.desktop.createWindow(window);
+        //            } else {
+        //                alert(item.notSelectedWarn);
+        //            }
+        //            break;
         case "delete":
             if(selectedId != null) {
                 if(confirm(item.confirmDelete)) {
@@ -135,6 +135,14 @@ Desktop.prototype.toolbarAction = function(id) {
         case "save":
             this.processor.sendData();
             break;
+        default:
+            if(selectedId != null) {
+                var windowTitle = eval('this.' + id + 'Window');
+                window = application.communicator.getWindow(windowTitle + "/id/" + selectedId);
+                application.controlls.desktop.createWindow(window);
+            } else {
+                alert(item.notSelectedWarn);
+            }
     }
 }
 
@@ -165,7 +173,12 @@ Desktop.prototype.closeWindow = function(wid) {
 }
 
 Desktop.prototype.getWindowURL = function(wid) {
-    return (application.controlls.desktop.windows[wid]).windowURL;
+    var window = (application.controlls.desktop.windows[wid])
+    if(window != null) {
+        return window.windowURL;
+    } else {
+        return null;
+    }
 }
 
 Desktop.prototype.setWindowURL = function(wid, url) {
@@ -313,9 +326,13 @@ Register.prototype.refresh = function(type) {
             } else if (item.awsType == 'tree') {
                 item.refreshItem();
             }
-        }catch(e) {
-        //na wypadek gdyby tabelka istniaja w rejestrze ale zniknal
-        //element html, np z powodu zamkniecia/przeladowania okna
+        } catch(e) {
+            //na wypadek gdyby tabelka istniaja w rejestrze ale zniknal
+            //element html, np z powodu zamkniecia/przeladowania okna.
+            //W takim przypadku od razu usuwamy stara tabelkę z rejestru.
+            //Tylko coś to k*** działac nie chce. Najwyraźniej element
+            //html dalej gdzieś rezyduje :|
+            (this.register[type])[item] = undefined;
         }
     }
 }
