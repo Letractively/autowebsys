@@ -100,8 +100,10 @@ class ModelRenderer {
                         if (isset($button->parameters)) {
                             $parameters = self::renameParameters($button->parameters, $parameters);
                             $out .= "$toolbarName.$buttonName" . "Window = '$window' + '$parameters';";
+                            Logger::notice(self::$log_type, "Added button: $toolbarName.$buttonName" . "Window = '$window' + '$parameters';");
                         } else {
                             $out .= "$toolbarName.$buttonName" . "Window = '$window';";
+                            Logger::notice(self::$log_type, "Added button: $toolbarName.$buttonName" . "Window = '$window';");
                         }
                     }
             }
@@ -311,11 +313,13 @@ class ModelRenderer {
         $out = "";
         $out .= "var url = application.controlls.desktop.getWindowURL($wid);";
         $out .= "var newUrl = '';";
-        $out .= "if(url.lastIndexOf('=') == -1) {";
+        $out .= "if(url != null && url.lastIndexOf('=') == -1) {";
         $out .= "   newURL = url + '?id=' + xml_node.getAttribute('sid');";
         $out .= "   application.controlls.desktop.setWindowURL($wid, newURL);";
         $out .= "} else {";
+        $out .= "   if(url != null) {";
         $out .= "   application.controlls.desktop.refreshWindow($wid);";
+        $out .= "   }";
         $out .= "}";
         return $out;
     }
