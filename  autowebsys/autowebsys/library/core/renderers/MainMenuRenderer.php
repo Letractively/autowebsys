@@ -28,7 +28,7 @@ class MainMenuRenderer {
 
     private static function renderLevel($el, $request) {
         $renderedMenu = "";
-        if (!isset($el['security']) || AuthManager::checkAccess($el['security'], $request)) {
+        if (!isset($el['security']) || AuthManager::checkAccess($el['security'], $request, true)) {
             $renderedMenu .= "<item id=\"m_" . $el['id'] . "\" text=\"" . $el['text'] . "\" img=\"" . $el['img'] . "\">";
             foreach ($el as $child) {
                 $renderedMenu .= MainMenuRenderer::renderLevel($child, $request);
