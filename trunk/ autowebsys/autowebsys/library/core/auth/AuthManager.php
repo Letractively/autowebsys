@@ -84,7 +84,7 @@ class AuthManager extends Zend_Controller_Plugin_Abstract {
         return self::$adapter->getRole(self::getUsername());
     }
 
-    public static function checkAccess($privilagedGroupName, Zend_Controller_Request_Abstract $request) {
+    public static function checkAccess($privilagedGroupName, Zend_Controller_Request_Abstract $request, $quiet = false) {
         $role = self::getUserRole();
         if (self::hasAccess($role, $privilagedGroupName)) {
             return true;
@@ -93,7 +93,9 @@ class AuthManager extends Zend_Controller_Plugin_Abstract {
             $action = $request->getActionName();
             $type = $request->getParam("type");
             $name = $request->getParam("name");
-            Logger::warning(self::$log_type, "User " . AuthManager::getUsername() . " tried to access forbidden zone: " . $controller . "/" . $action . "/" . $type . "/" . $name);
+            if (!$quiet) {
+                Logger::warning(self::$log_type, "User " . AuthManager::getUsername() . " tried to access forbidden zone: " . $controller . "/" . $action . "/" . $type . "/" . $name);
+            }
             return false;
         }
     }
