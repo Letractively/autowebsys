@@ -30,6 +30,7 @@ class STParser {
         $tagName = substr($tag, $startName, $endName - $startName);
         $params = substr($tag, $endName + 1, -2);
         $params = str_replace(" ", "", $params);
+        Logger::notice(self::$log_type, "Found tag:" . $tagName . " with parameters (" . $params . ")");
         $params = explode(",", $params);
         return self::executeTag($tagName, $params, $requestParams);
     }

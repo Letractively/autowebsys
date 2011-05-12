@@ -29,8 +29,11 @@ class TModelsRenderer extends CustomTag {
                     $out .= ModelRenderer::renderForm($model, $wid, 0, $this->getRequestParams());
                 }
                 break;
+            case "combo_no_bind":
+                $out .= ModelRenderer::renderComboWithoutBind($model, $params[2], $params[3], $params[4]);
+                break;
             case "combo":
-                $out .= ModelRenderer::renderCombo($model, $params[2]);
+                $out .= ModelRenderer::renderCombo($model, $params[2], $params[3], $params[4]);
                 break;
             case "tree":
                 $out .= ModelRenderer::renderTree($model, $this->getRequestParams());

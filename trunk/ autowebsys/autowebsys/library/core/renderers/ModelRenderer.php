@@ -7,6 +7,7 @@ require_once('core/renderers/structures/Tree.php');
 require_once('core/renderers/structures/Layout.php');
 require_once('core/renderers/WindowRenderer.php');
 require_once('core/STParser.php');
+require_once('tags/TUtils.php');
 
 class ModelRenderer {
 
@@ -356,11 +357,24 @@ class ModelRenderer {
         return $out;
     }
 
-    public static function renderCombo($model, $bind) {
+    public static function renderComboWithoutBind($model, $eventHandler = "", $id = "", $resultHandlerIdLabel = "") {
+        $model = XMLParser::xmlStringAsObject($model);
+        $name = $model->name->__toString();
+        Logger::notice(self::$log_type, "Rendering combo: " . $name . "event: $eventHandler, id: $id, resultHandlerid: $resultHandlerIdLabel");
+        $utils = new TUtils();
+        $target = $utils->getRequestUID(array($resultHandlerIdLabel));
+        $id = $utils->getRequestUID(array($id));
+        return "<select id=\"$id\" connector=\"/data/index/type/model/subtype/combo/name/$name\" onChange=\"$eventHandler('$id', '$target')\"></select>";
+    }
+
+    public static function renderCombo($model, $bind, $eventHandler = "", $id = "", $resultHandlerIdLabel = "") {
         $model = XMLParser::xmlStringAsObject($model);
         $name = $model->name->__toString();
         Logger::notice(self::$log_type, "Rendering combo: " . $name);
-        return "<select connector=\"/data/index/type/model/subtype/combo/name/$name\" bind=\"$bind\"></select>";
+        $utils = new TUtils();
+        $target = $utils->getRequestUID(array($resultHandlerIdLabel));
+        $id = $utils->getRequestUID(array($id));
+        return "<select id=\"$id\" connector=\"/data/index/type/model/subtype/combo/name/$name\" bind=\"$bind\" onChange=\"$eventHandler('$id', '$target')\"></select>";
     }
 
     private static function buildTree($tree) {
