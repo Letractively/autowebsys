@@ -1,6 +1,7 @@
 <?php
 
 require_once("core/XMLParser.php");
+require_once("core/Logger.php");
 
 /**
  * Kontroller sterujący wywoływaniem kontrolerów użytkownika zdefiniowanych
@@ -20,7 +21,13 @@ class CustomController extends Zend_Controller_Action {
             require_once("controllers/" . $class . ".php");
             $instance = new $class();
             $instance->setController($this);
-            echo $instance->handleRequest();
+            $instance->setRequestParameters($this->_getAllParams());
+            try {
+                $instance->init();
+                echo $instance->handleRequest();
+            } catch(Exception $e) {
+                Logger::warning($e->getCode(), $e->getMessage() . ', in file: ' . $e->getFile() . '(' . $e->getLine() . ')');
+            }
         }
     }
 

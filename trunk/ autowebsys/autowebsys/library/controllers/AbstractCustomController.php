@@ -13,11 +13,11 @@ abstract class AbstractCustomController {
     protected $requestParameters;
 
     public function AbstractCustomController() {
-        
+
     }
 
     public function setController(Zend_Controller_Action $parentController) {
-        $this->requestParameters = $parentController;
+        $this->parentController = $parentController;
     }
     
     public function setRequestParameters($parameters) {
@@ -36,6 +36,39 @@ abstract class AbstractCustomController {
         }
     }
 
+    public function getParameters() {
+        return $this->requestParameters;
+    }
+
+    protected function setXmlHeader() {
+        header('Content-type: text/xml');
+    }
+
+    protected function getXmlVersion() {
+        return "<?xml version=\"1.0\"?>";
+    }
+
     abstract public function handleRequest();
+
+    /**
+     * Metoda jest wywoływana przed handleRequest. Można ją przeciążać
+     * w celu sprawdzania dostępnych parametrow itp. Każdy wyrzucony wyjątek
+     * zotanie złapany i przekazany do logów a metoda handleRequest nie zostanie
+     * wywołana.
+     */
+    public function init() {
+    }
+    
+    /**
+     * Metoda zwraca standardową odpowiedz typu XML
+     * @param type $type typ zwracanej odpowiedzi
+     * @param type $result najczęsciej wartość 0|1 - 0 OK, 1 źle
+     * @param type $errors opis błędu
+     */
+    public function xmlResponse($type, $result, $errors = "") {
+        $this->setXmlHeader();
+        return $this->getXmlVersion() .
+            "<data><action type=\"$type\" result=\"$result\" errors=\"$errors\" /></data>";
+    }
 }
 ?>

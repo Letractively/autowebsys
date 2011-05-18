@@ -98,6 +98,7 @@ class ModelRenderer {
                     $out .= "$toolbarName.addButton('$buttonName', null, '$label', 'new.gif', 'new.gif');";
                     if (isset($button->window)) {
                         $window = $button->window;
+                        $out .= "$toolbarName.$buttonName" . "type = 'window';";
                         if (isset($button->parameters)) {
                             $parameters = self::renameParameters($button->parameters, $parameters);
                             $out .= "$toolbarName.$buttonName" . "Window = '$window' + '$parameters';";
@@ -106,6 +107,12 @@ class ModelRenderer {
                             $out .= "$toolbarName.$buttonName" . "Window = '$window';";
                             Logger::notice(self::$log_type, "Added button: $toolbarName.$buttonName" . "Window = '$window';");
                         }
+                    } else if (isset($button->js)) {
+                        $js = $button->js->__toString();
+                        $js = str_replace("'", "\'", $js);
+                        $out .= "$toolbarName.$buttonName" . "type = 'js';";
+                        $out .= "$toolbarName.$buttonName" . "JS = '$js';";
+                        Logger::notice(self::$log_type, "Added JS: $toolbarName.$buttonName" . "JS = '$js';");
                     }
             }
         }
@@ -467,7 +474,7 @@ class ModelRenderer {
                     $modelName = $value->object_model->__toString();
                     $model = XMLParser::getXMLModel($modelName);
                     $grid = new Grid($model);
-                    if(isset($grid->xml->taskbar)) {
+                    if (isset($grid->xml->taskbar)) {
                         $out .= "var o_toolbar_$name = $name.cells('$cell').attachToolbar();";
                         $out .= self::initTaskbar($grid, "o_toolbar_$name", $grid->type, $parameters);
                     }
@@ -564,4 +571,5 @@ class ModelRenderer {
     }
 
 }
+
 ?>
