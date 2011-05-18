@@ -137,9 +137,19 @@ Desktop.prototype.toolbarAction = function(id) {
             break;
         default:
             if(selectedId != null) {
-                var windowTitle = eval('this.' + id + 'Window');
-                window = application.communicator.getWindow(windowTitle + "/id/" + selectedId);
-                application.controlls.desktop.createWindow(window);
+                var type = eval('this.' + id + 'type');
+                switch(type) {
+                    case 'window':
+                        var windowTitle = eval('this.' + id + 'Window');
+                        window = application.communicator.getWindow(windowTitle + "/id/" + selectedId);
+                        application.controlls.desktop.createWindow(window);
+                        break;
+                    case 'js':
+                        var toEval = eval('this.' + id + 'JS');
+                        eval(toEval);
+                        break;
+                }
+                
             } else {
                 alert(item.notSelectedWarn);
             }
