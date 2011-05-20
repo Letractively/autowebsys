@@ -4,7 +4,6 @@ require_once('utils/vault/Vault.php');
 
 class VaultUpload extends Vault {
 
-    private $id;
     private $inputName;
     private $fileName;
     private $tempLoc;
@@ -16,8 +15,10 @@ class VaultUpload extends Vault {
     public function getUpload($path) {
         $target_path = $path . basename($this->fileName);
         if (move_uploaded_file($this->tempLoc, $target_path)) {
+            Logger::notice("VAULT_UPLOAD", "File moved from " . $this->tempLoc . " to " . $target_path);
             $this->setState(Vault::SUCCESS);
         } else {
+            Logger::warning("VAULT_UPLOAD", "Cant move file from " . $this->tempLoc . " to " . $target_path);
             $this->setState(Vault::ERROR);
         }
         return $_FILES[$this->inputName]['error'];
