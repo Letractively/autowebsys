@@ -18,18 +18,24 @@ class CustomController extends Zend_Controller_Action {
             $xml = XMLParser::xmlStringAsObject(ApplicationManager::getCachedValue(ApplicationManager::$CUSTOM_CONTROLLER, $name));
             $class = $xml->class->__toString();
             Logger::notice("CUSTOM_CONTROLLER", "Executing custom controller: " . $xml->name);
+            Logger::notice("CUSTOM_CONTROLLER", "Including '" . "controllers/" . $class . ".php" . "'");
             require_once("controllers/" . $class . ".php");
+            Logger::notice("CUSTOM_CONTROLLER", "Controller included(" . "controllers/" . $class . ".php" . ")");
             $instance = new $class();
+            Logger::notice("CUSTOM_CONTROLLER", "Controller created");
             $instance->setController($this);
             $instance->setRequestParameters($this->_getAllParams());
             try {
                 $instance->init();
+                Logger::notice("CUSTOM_CONTROLLER", "Controller initiated");
                 echo $instance->handleRequest();
-            } catch(Exception $e) {
+                Logger::notice("CUSTOM_CONTROLLER", "Controller executed");
+            } catch (Exception $e) {
                 Logger::warning($e->getCode(), $e->getMessage() . ', in file: ' . $e->getFile() . '(' . $e->getLine() . ')');
             }
         }
     }
 
 }
+
 ?>

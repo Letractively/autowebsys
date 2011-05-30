@@ -110,9 +110,15 @@ class ModelRenderer {
                     } else if (isset($button->js)) {
                         $js = $button->js->__toString();
                         $js = str_replace("'", "\'", $js);
+                        $js = STParser::parse($js, $parameters);
                         $out .= "$toolbarName.$buttonName" . "type = 'js';";
                         $out .= "$toolbarName.$buttonName" . "JS = '$js';";
                         Logger::notice(self::$log_type, "Added JS: $toolbarName.$buttonName" . "JS = '$js';");
+                    }
+                    if(isset($button->noSelection)) {
+                        $out .= "$toolbarName.$buttonName" . "noSelection = $button->noSelection;";
+                    } else {
+                        $out .= "$toolbarName.$buttonName" . "noSelection = false;";
                     }
             }
         }

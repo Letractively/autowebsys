@@ -136,7 +136,8 @@ Desktop.prototype.toolbarAction = function(id) {
             this.processor.sendData();
             break;
         default:
-            if(selectedId != null) {
+            var noSelection = eval('this.' + id + 'noSelection');
+            if(selectedId != null || noSelection) {
                 var type = eval('this.' + id + 'type');
                 switch(type) {
                     case 'window':
