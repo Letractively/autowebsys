@@ -14,6 +14,20 @@ class DBManager {
             Logger::info(self::$log_type, "Statement executed without any errors.");
         }
     }
+    
+    public static function prepareStatement($queryName) {
+        $query = ApplicationManager::getCachedValue(ApplicationManager::$DB_QUERY, $queryName);
+        $query = STParser::parse($query);
+        Logger::notice(self::$log_type, "Getting data from named query: " . $query);
+        $statement = self::getConnector()->prepare($query);
+        return $statement;
+    }
+    
+    public static function executeStatement($queryName, $statement) {
+        $statement->execute();
+        self::checkForErrors($queryName, $statement);
+        Logger::notice(self::$log_type, "SQL executed: " . $statement->queryString);
+    }
 
     public static function fetchAll($query) {
         $query = STParser::parse($query);
@@ -29,6 +43,17 @@ class DBManager {
         $statement->execute();
         self::checkForErrors($query, $statement);
         return $statement->fetch(PDO::FETCH_OBJ);
+    }
+    
+    public static function getRow($queryName, $parameters = array()) {
+        $result = self::getData($queryName, $parameters);
+        if(count($result) == 1) {
+            return $result[0];
+        } else {
+            Logger::warning(self::$log_type, "Got " . count($result) . " rows from $queryName. Expected single result");
+            throw new Exception("Too many results");
+            return null;
+        }
     }
 
     public static function getData($queryName, $parameters = array()) {
