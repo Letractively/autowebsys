@@ -39,6 +39,13 @@ abstract class Structure {
         $this->rendered .= "</script>";
     }
 
+    protected function addHTMLLine($line) {
+        if(!$this->jsOpened) {
+            $this->rendered .= $line;
+        } else {
+            throw new Exception("Cant add HTML line, JS tag already opened.");
+        }
+    }
 
     protected function addJavaScriptLine($line) {
         if(!$this->jsOpened) {
