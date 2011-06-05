@@ -188,6 +188,9 @@ class DataController extends Zend_Controller_Action {
                     if ($key != "ids" && $key != $id . "_!nativeeditor_status") {
                         $key = substr($key, strpos($key, "_") + 1);
                         $values["$key"] = trim($value);
+                        if($values["$key"] == "NULL") {
+                            $values["$key"] = null;
+                        }
                     }
                 }
                 return $values;
