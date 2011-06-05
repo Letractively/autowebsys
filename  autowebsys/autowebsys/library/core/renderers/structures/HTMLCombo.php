@@ -33,8 +33,17 @@ class HTMLCombo extends Structure {
 
     protected function addOptions($addEmptyFirst) {
         $options = $this->getOptions();
+        $this->checkForEmptyArray($options);
         foreach ($options as $option) {
             $this->addOption($option);
+        }
+    }
+    
+    protected function checkForEmptyArray($options) {
+        if(count($options) == 0) {
+            $this->openOption("NULL");
+            $this->addHTMLLine("none");
+            $this->closeOption();
         }
     }
 
