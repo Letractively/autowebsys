@@ -1,6 +1,7 @@
 <?php
 
 require_once("core/connectors/DataConnector.php");
+require_once("core/Logger.php");
 
 abstract class DataFormConnector extends DataConnector {
 
@@ -31,6 +32,8 @@ abstract class DataFormConnector extends DataConnector {
         $out .= "<data>";
         if (count($data) == 1) {
             foreach ($data[0] as $key => $value) {
+                $value = (empty($value) ? "false" : $value);
+                Logger::notice("DATA_FORM_CONNECTOR", "Rendering '$key=$value'");
                 $out .= "<$key>$value</$key>";
             }
         }
