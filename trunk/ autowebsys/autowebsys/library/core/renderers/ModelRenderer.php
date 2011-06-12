@@ -310,7 +310,7 @@ class ModelRenderer {
     private static function closeFormEventAfterUpdate() {
         return "return true;});";
     }
-
+    
     private static function pinFormToProcessor($processorName, $formName) {
         return "$processorName.form = $formName;";
     }
@@ -366,6 +366,7 @@ class ModelRenderer {
         $out .= self::parseFormJS($form->xml->onSave, $parameters);
         $out .= self::refreshForm($wid);
         $out .= self::closeFormEventAfterUpdate();
+        $out .= self::parseFormJS($form->xml->onRender, $parameters);
         $out .= self::closeScript();
         return $out;
     }
