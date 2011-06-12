@@ -31,9 +31,7 @@ abstract class DataFormConnector extends DataConnector {
         $out .= "<data>";
         if (count($data) == 1) {
             foreach ($data[0] as $key => $value) {
-                if($value != "") {
-                    $out .= "<$key>$value</$key>";
-                }
+                $out .= "<$key>$value</$key>";
             }
         }
         $out .= "</data>";
