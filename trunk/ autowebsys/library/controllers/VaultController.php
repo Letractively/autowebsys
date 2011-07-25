@@ -51,7 +51,6 @@ class VaultController extends AbstractCustomController {
         $this->vaultUpload = new VaultUpload($this->getParameter("sessionId", ""));
         $vaultModel = $this->getVaultModel($this->getParameter("model", ""));
         $this->path = $vaultModel->path->__toString();
-        Logger::info("VAULT_CONTROLLER", "Vault model initialized: $modelName, path: $this->path");
     }
     
     private function getVaultModel($modelName) {
