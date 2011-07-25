@@ -6,6 +6,7 @@ require_once('utils/vault/VaultUpload.php');
 require_once('controllers/AbstractCustomController.php');
 require_once('core/ApplicationManager.php');
 require_once('core/renderers/structures/DHTMLXVault.php');
+require_once('core/Logger.php');
 
 /**
  * Kontroller obsługi obiektu DHTMLXVault. Żadania są obsługiwane za pomocą
@@ -50,6 +51,7 @@ class VaultController extends AbstractCustomController {
         $this->vaultUpload = new VaultUpload($this->getParameter("sessionId", ""));
         $vaultModel = $this->getVaultModel($this->getParameter("model", ""));
         $this->path = $vaultModel->path->__toString();
+        Logger::info("VAULT_CONTROLLER", "Vault model initialized: $modelName, path: $this->path");
     }
     
     private function getVaultModel($modelName) {
