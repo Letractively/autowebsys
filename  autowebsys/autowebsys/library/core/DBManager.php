@@ -15,6 +15,13 @@ class DBManager {
         }
     }
     
+    public static function prepareSQLStatement($query) {
+        $query = STParser::parse($query);
+        Logger::notice(self::$log_type, "Getting data from named query: " . $query);
+        $statement = self::getConnector()->prepare($query);
+        return $statement;
+    }
+    
     public static function prepareStatement($queryName) {
         $query = ApplicationManager::getCachedValue(ApplicationManager::$DB_QUERY, $queryName);
         $query = STParser::parse($query);
