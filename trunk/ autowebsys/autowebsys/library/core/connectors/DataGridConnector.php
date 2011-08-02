@@ -32,7 +32,7 @@ abstract class DataGridConnector extends DataConnector {
         }
         $this->filters = (isset($parameters["dhx_filter"]) ? $parameters["dhx_filter"] : array());
         $this->posStart = (isset($parameters["posStart"]) ? $parameters["posStart"] : 0);
-        $this->count = (isset($parameters["count"]) ? $parameters["count"] : 1000);
+        $this->count = (isset($parameters["count"]) ? $parameters["count"] : 100);
         $this->model = $model;
         $start = time();
         $data = $this->getData($parameters);
@@ -47,7 +47,7 @@ abstract class DataGridConnector extends DataConnector {
         header('Content-type: text/xml');
         $out = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
         $out .= "<rows pos=\"$this->posStart\" total_count=\"$this->totalCount\">";
-        foreach ($data as $row) {
+        while($row = $data->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) {
             $idName = $this->getIdName($this->model);
             $id = $row->$idName;
             $out .= "<row id='$id'>";

@@ -48,7 +48,9 @@ class SQLGridConnector extends DataGridConnector {
         $query = $this->addSortOrder($query);
         $query = $this->addLimit($query);
         Logger::notice("SQLGridConnector", "Executing query '$query'");
-        return DBManager::fetchAll($query);
+        $statement = DBManager::prepareSQLStatement($query);
+        DBManager::executeStatement($query, $statement);
+        return $statement;
     }
 
     private function addFilters($query) {
