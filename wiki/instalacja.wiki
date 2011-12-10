@@ -45,11 +45,61 @@ CREATE TABLE users_groups_relations (
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 }}}
-=== Minimalna konfiguracja platformy ===
+=== Minimalna konfiguracja aplikacji ===
 ==== Główne założenia ====
+Z założenia, platforma ma umożliwiać uruchomienie pełnej i funkcjonalnej aplikacji bez konieczności pisania kodu PHP. Całość ma być skonfigurowana za pomocą plików XML. Oczywiście są też mechanizmu ułatwiające włączanie własnych rozwiązań, który wymagają kodowania.
+==== Struktura pliku XML ====
+Konfiguracja XML została podzielona na kilka sekcji:
+ * warstwa danych
+ * parametry niestandardowe
+ * interfejs użytkownika
+ * okna
+ * modele danych
+ * szablony
+ * tagi
+ * kontrolery
+ * autoryzacja
+Minimalny plik XML ma strukturę:
+{{{
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+    <data>
+        <datasource url="<connection_string>" user="<user>" password="<password>" />
+        <queries>
+            
+        </queries>
+    </data>
+    <parameters>
+        <param name="authAdapter">DBAdapter</param>
+        <param name="cache">true</param>
+    </parameters>
+    <interface>
+        <main-menu>
+        </main-menu>
+    </interface>
+    <windows>
+    </windows>
+    <models>
+    </models>
+    <templates>
+    </templates>
+    <tags>
+    </tags>
+    <controllers>
+    </controllers>
+    <security>
+    </security>
+</config>
+}}}
+Plik można dowolnie dzielić używając dyrektywy {{{<include path="<relative_path_to_xml>" />}}} w dowolnym miejscu pliku
 ==== Dostęp do warstwy danych ====
+AWS wykorzystuje PDO do łączenia się z bazą danych, zatem nie jest zależny od jednego dostawcy. Definicja dostępu do DB jest opisana za pomocą {{{connection string'a}}}. Przykład dla MySQL'a: http://www.php.net/manual/en/pdo.connections.php
+
+Wszystkie zapytania do bazy danych wykorzystywane przez aplikację, muszą być zawarte w drzewie {{{<queries>}}}. Zapytania umieszcza się w formie {{{<query name="select_users">SELECT * FROM users</query>}}}. Nazwa zapytania musi być unikatowa. W przypadku powtórzenia nazwy, zapytanie zostanie nadpisane.
 ==== Autoryzacja ====
 ==== Interfejs użytkownika ====
+==== Parametry niestandardowe ====
 ==== Szablony ====
 ==== Modele danych ====
 ==== Tagi ====
