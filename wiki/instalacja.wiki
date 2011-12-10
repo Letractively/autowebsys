@@ -1,7 +1,56 @@
-= Instalacja =
+= Szybki start =
 
-W celu instalacji należy ściągnąć pliki z svn z katalogu /trunk/autowebsys i umieścić w dowolnym katalogu(np. htdoc). Następnie należy skonfigurować virtual hosta w apache'u i wskazać na folder /htdoc/autowebsys/public. Wymagany jest włączony moduł 'RewriteEngine' oraz ustawiona opcja 'AllowOverride All' w virtual hoście.
+== Pobranie źródeł AWS ==
+Nie istnieje żadna procedura budowy paczek, aktualna wersja jest dostępna na SVN. W trunku powinna być wersja stabilna. SVN jest dostępny w trybie do odczytu pod: {{{http://autowebsys.googlecode.com/svn/trunk/ autowebsys-read-only}}}
+== Konfiguracja środowiska ==
+Platforma jest przystosowana do pracy pod kontrolą serwera Apache. Wymagane jest włączenie modułów vhost oraz RewriteEngine. Przy konfigurowaniu Virtual Hosta należy pamiętać o formułce {{{AllowOverride All}}} oraz wskazaniu folderu autowebsys/public jako początkowego. Bez tego strona nie będzie działać poprawnie. RewriteEngine wystarczy, że będzie włączony, definicje przepisywania url'i są zdefiniowane w aplikacji.
 
-'Autowebsys' do działania wymaga uruchomionego daemona 'Memcache' na standardowym porcie 11211.
+Apache musi być skompilowany z obsługą PHP w wersji co najmniej 5.3.5 oraz z włączoną obsługą short tags - domyślnie jest to wyłączone.
 
-W konfiguracji PHP należy również włączyć 'short tags'.
+W celu optymalizacji parsowania XML, platforma wymaga serwera [http://memcached.org/ Memcache] działającego na localhoscie na standardowym porcie(11211). Dodatkowo potrzebna będzie biblioteka PHP to obsługi [http://pecl.php.net/package/memcache Memcache'a].
+
+Logi platformy potrzebują biblioteki [http://pear.php.net/package/Log/redirected Pear Log]
+
+== Podstawowa konfiguracja platformy ==
+AWS pozwala na dosyć prostą implementację własnych adapterów autoryzacji, jednak zalecane jest użycie adaptera w oparciu o role i grupy dostępu z konfiguracją w bazie danych.
+=== Przygotowanie struktury bazy danych pod autoryzacje ===
+Jeden użytkownik może należeć do jednej grupy, dodatkowo każda grupa może należeć do dowolnie wielu innych. Prawa dostępu użytkownika są sumą praw danej grupy i jej zależności.
+Przy definicji struktury zależności między grupami, należy zbudować strukturę drzewiastą, AWS nie ma mechanizmu wykrywania cykli(tzn. chyba ma ale nigdy nie testowałem).
+{{{
+CREATE TABLE users (
+  id_users serial,
+  www_login character varying,
+  www_pass character varying,
+  id_users_groups integer,
+  CONSTRAINT users_users_groups_fkey FOREIGN KEY (id_users_groups)
+      REFERENCES users_groups (id_users_groups) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE SET NULL,
+  CONSTRAINT www_login_unique UNIQUE (www_login)
+);
+
+CREATE TABLE users_groups (
+  id_users_groups serial,
+  name character varying,
+);
+
+CREATE TABLE users_groups_relations (
+  id_users_groups_relations serial,
+  id_users_group integer NOT NULL,
+  id_member_of integer NOT NULL,
+  CONSTRAINT id_users_groups_fkey FOREIGN KEY (id_users_group)
+      REFERENCES users_groups (id_users_groups) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT id_users_groups_member_fkey FOREIGN KEY (id_member_of)
+      REFERENCES users_groups (id_users_groups) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+}}}
+=== Minimalna konfiguracja platformy ===
+==== Główne założenia ====
+==== Dostęp do warstwy danych ====
+==== Autoryzacja ====
+==== Interfejs użytkownika ====
+==== Szablony ====
+==== Modele danych ====
+==== Tagi ====
+==== Kontrolery ====
