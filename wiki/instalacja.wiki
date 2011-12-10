@@ -98,7 +98,74 @@ AWS wykorzystuje PDO do łączenia się z bazą danych, zatem nie jest zależny 
 
 Wszystkie zapytania do bazy danych wykorzystywane przez aplikację, muszą być zawarte w drzewie {{{<queries>}}}. Zapytania umieszcza się w formie {{{<query name="select_users">SELECT * FROM users</query>}}}. Nazwa zapytania musi być unikatowa. W przypadku powtórzenia nazwy, zapytanie zostanie nadpisane.
 ==== Autoryzacja ====
+Dla zalecanej konfiguracji dostępu, drzewo {{{<security>}}} powinno zawierać poniższe wpisy:
+{{{
+<db>
+    <groups>
+        <queries>
+            <select>auth_group_parent</select>
+        </queries>
+    </groups>
+    <roles>
+        <queries>
+            <select>auth_select_user</select>
+        </queries>
+    </roles>
+</db>
+}}}
+Zapytania dla wspomnianej struktury muszą wyglądać następująco:
+{{{
+<query name="auth_select_user">
+SELECT www_login, www_pass, users_groups.name FROM users JOIN users_groups ON (users.id_users_groups = users_groups.id_users_groups) WHERE www_login = :www_login
+</query>
+<query name="auth_group_parent">
+SELECT parents.id_users_groups, parents.name FROM users_groups JOIN users_groups_relations ON(users_groups.id_users_groups = users_groups_relations.id_users_group) JOIN users_groups AS parents ON(users_groups_relations.id_member_of = parents.id_users_groups) WHERE users_groups.name = :name
+</query>
+}}}
 ==== Interfejs użytkownika ====
+Interfejs użytkownika jest wzorowany na tym, znanym z Windows'a. Pasek menu jest definiowany w drzewie {{{<main-menu>}}}, okna w {{{<windows>}}}. Pasek menu może zawierać dowolnie wiele zagłębień. Przycisk {{{Logout}}} jest dodawany automatycznie.
+Poniżej przedstawiam przykładową definicję menu:
+{{{
+<main-menu>
+    <item id="administration_tools" text="Administration tools" img="new.gif" security="admins">
+        <item id="users_menu" text="Users" img="new.gif" security="admins">
+        <item id="users_groups" text="Users groups" img="new.gif" security="admins"/>
+    </item>
+    <item id="client_account" text="Account" img="new.gif" security="clients"/>
+</main-menu>
+}}}
+Opis parametrow:
+ * id - dla liście drzewa, oznacza że należy otworzyć okno o takim samym id
+ * test - etykieta pozycji
+ * img - ścieżka do ikonki pozycji
+ * security - nazwa grupy posiadającej dostęp do tej pozycji. W przypadku braku dostępu, pozycja nie jest w ogole rysowana
+
+Przykładowa definicja okna:
+{{{
+<window id="client_account">
+    <title>Account</title>
+    <security>clients</security>
+    <width>400</width>
+    <height>150</height>
+    <pos_x>10</pos_x>
+    <pos_y>10</pos_y>
+    <content>
+        <html>
+            <h1>Title</h1>
+            HTML content...<br/>
+        </html>
+    </content>
+</window>
+}}}
+Opis parametrow:
+ * id - ID okna, wymagane do związania z pozycja w menu
+ * title - tytuł okna
+ * security - co prawda, menu ukrywa dostęp do pozycji, do których użytkownik nie ma dostępu. Jednak dostęp do zawartości okna można uzyskać również za pomocą spreprarowanego URL'a, więc w definicji okna trzeba powtórzyć poziom dostępu
+ * width - szerokość okna
+ * height - wysokość okna
+ * pos_x - pozycja X
+ * pos_y - pozycja Y
+ * content - zawartość okna - w celu poprawienia czytelności może zawierać dowolnie dużo poddrzew {{{<html>}}}
 ==== Parametry niestandardowe ====
 ==== Szablony ====
 ==== Modele danych ====
