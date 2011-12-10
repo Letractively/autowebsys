@@ -1,6 +1,0 @@
-= Tagi XML =
-Wewnątrz plików XML można używać tagów, parsowanych przy każdym żądaniu klienta.
-
-== Lista tagów ==
- * `{translator:<key>}` - Pobranie etykiety
- * `{model:<structure>(<model_name>)}` - Wyrysowanie wybranej struktury dla wskazanego modelu danych. Dostępne struktury to `grid` oraz `form`
