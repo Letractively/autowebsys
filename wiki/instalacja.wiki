@@ -65,7 +65,7 @@ Minimalny plik XML ma strukturę:
 
 <config>
     <data>
-        <datasource url="<connection_string>" user="<user>" password="<password>" />
+        <datasource url="[connection_string]" user="[user]" password="[password]" />
         <queries>
             
         </queries>
@@ -167,7 +167,24 @@ Opis parametrow:
  * pos_y - pozycja Y
  * content - zawartość okna - w celu poprawienia czytelności może zawierać dowolnie dużo poddrzew {{{<html>}}}
 ==== Parametry niestandardowe ====
+W konfiguracji XML można również umieszczać własne parametry dostępne w ramach całej platformy. AWS wymaga obecności dwóch parametrów:
+ * authAdapter - nazwa adaptera autoryzacji, nazwa musi się pokrywać z nazwą pliku w {{{autowebsys/library/adapters/auth}}}
+ * cache - przełącznik cachowania konfiguracji XML, przyjmuje wartości true|false. W przypadku włączenia, po zmianie flagi trzeba zresetować serwer memcache.
 ==== Szablony ====
-==== Modele danych ====
+W celu poprawienia przejrzystości konfiguracji okien, wydzielona została sekcja tworzenia szablonów, które można wstawiać w dowolne okna(opis użycia znajduje się poniżej, w sekcji Tagi). Poniżej definicja przykładowego szablonu:
+{{{
+<template>
+    <name>dummy_template</name>
+    <html>
+        <div>
+            HTML content...
+        </div>
+    </html>
+</template>
+}}}
 ==== Tagi ====
+
+==== Modele danych ====
+===== Tabele =====
+===== Formularze =====
 ==== Kontrolery ====
