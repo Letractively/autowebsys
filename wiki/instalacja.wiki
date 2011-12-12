@@ -183,7 +183,18 @@ W celu poprawienia przejrzystości konfiguracji okien, wydzielona została sekcj
 </template>
 }}}
 ==== Tagi ====
-
+Oprócz umieszczania statycznych elementów w plikach XML, istnieje możliwość używania tagów, generujących treści przy każdym żądaniu zasobu. Tagi mogą być używane w dowolnym miejscu, w postaci ${[tag]([param1[, param2 ...]])}. Poniżej lista kilku przydatnych tagów:
+ * ${translator(BUNDLE_KEY)} - generator zlokalizowanych etykiet
+ * ${template(TEMAPLATE_NAME)} - wstawia wskazany szablon
+ * ${model(MODEL_NAME)} - wstawia wskazany model
+ * ${tabbar(tab1[, tab2 ...])} - tworzy tabbar'a ze wskazanych okien
+ * ${param(PARAM_NAME)} - wstawia parametr systemowy
+ * ${randuid()} - generuje losowy numer
+ * ${requid(KEY)} - generuje losowy numer w ramach żądania dla wskazanego klucza
+ * ${wid()} - wstawia ID aktualnego okna
+ * ${vault(VAULT_NAME)} - wstawia wskazany manager plików
+ * ${HTMLCombo(COMBO_NAME, BIND[, CHILD_COMBO[, CHILD_INPUT]])} - wstawia combo box'a dla wskazanego modelu
+ * ${HTMLComboNoBind(COMBO_NAME, DATA[, CHILD_COMBO[, CHILD_INPUT]])} - wstawia combo box'a niezbindowanego z formularzem dla wskazanego modelu
 ==== Modele danych ====
 ===== Tabele =====
 ===== Formularze =====
