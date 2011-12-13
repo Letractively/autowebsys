@@ -4,8 +4,10 @@ Przykładowy XML dla w pełni funkcjonalnej aplikacji:
 
 <config>
     <data>
+        <!-- Pamiętaj, żeby wpisać tutaj własne dane dostępowe ! -->
         <datasource url="[connection_string]" user="[user]" password="[password]" />
         <queries>
+            <!-- Sekcja zapytań dla wymaganych przez mechanizm autoryzacji -->
             <query name="auth_select_user">
                 SELECT 
                     www_login, 
@@ -28,18 +30,23 @@ Przykładowy XML dla w pełni funkcjonalnej aplikacji:
                 WHERE 
                     users_groups.name = :name
              </query>
+             <!-- Koniec sekcji zapytań dla autoryzacji -->
         </queries>
     </data>
     <parameters>
-        <param name="authAdapter">DBAdapter</param>
-        <param name="cache">true</param>
+        <!-- Adapter autoryzacji pozwalający na tworzenie list ACL -->
+        <param name="authAdapter">AdvancedDBAdapter</param>
+        <!-- Domyślnie cache jest wyłączony, pamiętaj żeby włączyć na środowisku produkcyjnym ! -->
+        <param name="cache">false</param>
     </parameters>
     <interface>
         <main-menu>
+            <!-- Sekcji menu dla administratorów -->
             <item id="administration_tools" text="Administration tools" img="new.gif" security="admins">
                 <item id="users_menu" text="Users" img="new.gif" security="admins">
                 <item id="users_groups" text="Users groups" img="new.gif" security="admins"/>
             </item>
+            <!-- Sekcja menu dla zwykłych userów -->
             <item id="client_account" text="Account" img="new.gif" security="clients"/>
         </main-menu>
     </interface>
