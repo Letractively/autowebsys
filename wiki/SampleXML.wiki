@@ -7,10 +7,26 @@ Przykładowy XML dla w pełni funkcjonalnej aplikacji:
         <datasource url="[connection_string]" user="[user]" password="[password]" />
         <queries>
             <query name="auth_select_user">
-SELECT www_login, www_pass, users_groups.name FROM users JOIN users_groups ON (users.id_users_groups = users_groups.id_users_groups) WHERE www_login = :www_login
+                SELECT 
+                    www_login, 
+                    www_pass, 
+                    users_groups.name 
+                FROM 
+                    users 
+                    JOIN users_groups ON (users.id_users_groups = users_groups.id_users_groups) 
+                WHERE 
+                    www_login = :www_login
             </query>
             <query name="auth_group_parent">
-SELECT parents.id_users_groups, parents.name FROM users_groups JOIN users_groups_relations ON(users_groups.id_users_groups = users_groups_relations.id_users_group) JOIN users_groups AS parents ON(users_groups_relations.id_member_of = parents.id_users_groups) WHERE users_groups.name = :name
+                SELECT 
+                    parents.id_users_groups, 
+                    parents.name 
+                FROM 
+                    users_groups 
+                    JOIN users_groups_relations ON(users_groups.id_users_groups = users_groups_relations.id_users_group) 
+                    JOIN users_groups AS parents ON(users_groups_relations.id_member_of = parents.id_users_groups)
+                WHERE 
+                    users_groups.name = :name
              </query>
         </queries>
     </data>
