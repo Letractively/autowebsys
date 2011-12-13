@@ -144,7 +144,7 @@ Przykładowa definicja okna:
 {{{
 <window id="client_account">
     <title>Account</title>
-    <security>clients</security>
+    <security>GROUP_NAME</security>
     <width>400</width>
     <height>150</height>
     <pos_x>10</pos_x>
@@ -186,16 +186,32 @@ W celu poprawienia przejrzystości konfiguracji okien, wydzielona została sekcj
 Oprócz umieszczania statycznych elementów w plikach XML, istnieje możliwość używania tagów, generujących treści przy każdym żądaniu zasobu. Tagi mogą być używane w dowolnym miejscu, w postaci ${[tag]([param1[, param2 ...]])}. Poniżej lista kilku przydatnych tagów:
  * ${translator(BUNDLE_KEY)} - generator zlokalizowanych etykiet
  * ${template(TEMAPLATE_NAME)} - wstawia wskazany szablon
- * ${model(MODEL_NAME)} - wstawia wskazany model
+ * ${model(MODEL_TYPE, MODEL_NAME)} - wstawia wskazany model
  * ${tabbar(tab1[, tab2 ...])} - tworzy tabbar'a ze wskazanych okien
  * ${param(PARAM_NAME)} - wstawia parametr systemowy
- * ${randuid()} - generuje losowy numer
- * ${requid(KEY)} - generuje losowy numer w ramach żądania dla wskazanego klucza
- * ${wid()} - wstawia ID aktualnego okna
- * ${vault(VAULT_NAME)} - wstawia wskazany manager plików
  * ${HTMLCombo(COMBO_NAME, BIND[, CHILD_COMBO[, CHILD_INPUT]])} - wstawia combo box'a dla wskazanego modelu
- * ${HTMLComboNoBind(COMBO_NAME, DATA[, CHILD_COMBO[, CHILD_INPUT]])} - wstawia combo box'a niezbindowanego z formularzem dla wskazanego modelu
 ==== Modele danych ====
+W celu wstawienia tabeli czy formularza w oknie, należy stworzyć jego model danych i umieścić w drzewie {{{<models>}}}. Kontrolki wstawia się za pomocą taga ${model(MODEL_TYPE, MODEL_NAME)}. MODEL_TYPE przyjmuje wartość {{{grid}}} dla tabeli oraz {{{form}}} dla formularza.
 ===== Tabele =====
+Poniżej minimalny model wymagany do stworzenia tabeli:
+{{{
+<model>
+    <name>GRID_NAME</name>
+    <security>GROUP_NAME</security>
+    <type>sql</type>
+    <sql>
+        <select>SELECT_QUERY_NAME</select>
+        <delete>DELETE_QUERY_NAME</delete>
+        <id>ID_FIELD</id>
+        <columns>COLUMN_1,COLUMN_2,...,COLUMN_N</columns>
+    </sql>
+</model>
+}}}
+Opis parametrów:
+ * name - nazwa tabeli, wymagana w celu identyfikacji
+ * security - analogicznie jak w przypadku okien, do danych można dostać się za pomocą spreparowanego url'a, więc tutaj również wymagane jest ustalenie praw dostępu
+ * type - zawsze przyjmuje wartość {{{sql}}}
+ * sql - poddrzewo definicji zarządzania danymi
+Rozszerzony opis modelu dla tabeli znajduje się [DataGrid tutaj].
 ===== Formularze =====
 ==== Kontrolery ====
