@@ -214,4 +214,5 @@ Opis parametrów:
  * sql - poddrzewo definicji zarządzania danymi
 Rozszerzony opis modelu dla tabeli znajduje się [DataGrid tutaj].
 ===== Formularze =====
-==== Kontrolery ====
+== Podsumowanie ==
+Powyższy opis nie pokrywa wszystkich możliwości platformy, jest to tylko zupełne minimum wymagane do postawienia aplikacji. Szerszy opis możliwości jest zawarty na pozostałych stronach tego wiki. Pełny XML do przykładu opisanego na tej stronie jest dostępny [SampleXML tutaj]
