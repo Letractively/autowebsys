@@ -2,7 +2,7 @@
 
 require_once("core/DBManager.php");
 require_once("core/ApplicationManager.php");
-require_once("adapters/auth/Role.php");
+require_once("core/auth/Role.php");
 
 class AdvancedDBAdapter extends AuthAdapter {
 
