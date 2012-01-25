@@ -32,9 +32,13 @@ abstract class DataFormConnector extends DataConnector {
         $out .= "<data>";
         if (count($data) == 1) {
             foreach ($data[0] as $key => $value) {
-                $value = (empty($value) ? "" : $value);
-                Logger::notice("DATA_FORM_CONNECTOR", "Rendering '$key=$value'");
-                $out .= "<$key>$value</$key>";
+                if(!empty($value)) {
+                    $out .= "<$key>$value</$key>";
+                    Logger::notice("DATA_FORM_CONNECTOR", "Rendering '$key=$value'");
+                }
+                else {
+                    Logger::notice("DATA_FORM_CONNECTOR", "Ommiting key '$key=$value'");
+                }
             }
         }
         $out .= "</data>";
