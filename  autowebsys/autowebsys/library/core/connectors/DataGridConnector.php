@@ -49,7 +49,8 @@ abstract class DataGridConnector extends DataConnector {
         $out .= "<rows pos=\"$this->posStart\" total_count=\"$this->totalCount\">";
         while($row = $data->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) {
             $idName = $this->getIdName($this->model);
-            $id = $row->$idName;
+            $id = $row[$idName];
+            Logger::notice("DataGridConnector", "id: '$idName=$id'");
             $out .= "<row id='$id'>";
             foreach ($row as $key => $item) {
                 if ($key != $this->getIdName($this->model)) {
