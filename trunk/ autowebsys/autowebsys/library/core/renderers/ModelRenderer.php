@@ -278,7 +278,7 @@ class ModelRenderer {
     }
 
     private static function openForm($name) {
-        return "<form action=\"\" method=\"post\" accept-charset=\"utf-8\" name=\"$name\" id=\"$name\" \">";
+        return "<form action=\"\" method=\"post\" accept-charset=\"utf-8\" name=\"$name\" id=\"$name\">";
     }
 
     private static function closeForm() {
