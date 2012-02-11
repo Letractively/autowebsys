@@ -89,11 +89,11 @@ class AuthManager extends Zend_Controller_Plugin_Abstract {
         if (self::hasAccess($role, $privilagedGroupName)) {
             return true;
         } else {
-            $controller = $request->getControllerName();
-            $action = $request->getActionName();
-            $type = $request->getParam("type");
-            $name = $request->getParam("name");
             if (!$quiet) {
+                $controller = $request->getControllerName();
+                $action = $request->getActionName();
+                $type = $request->getParam("type");
+                $name = $request->getParam("name");
                 Logger::warning(self::$log_type, "User " . AuthManager::getUsername() . " tried to access forbidden zone: " . $controller . "/" . $action . "/" . $type . "/" . $name);
             }
             return false;

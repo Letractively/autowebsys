@@ -27,16 +27,16 @@ abstract class Structure {
         $this->name = "g_" . $this->uid;
     }
     
-    protected function createDiv($name) {
-        $this->rendered .= "<div id=\"$name\"></div>";
+    protected function createDiv($name, $style) {
+        $this->rendered .= "<div id=\"$name\" style=\"$style\"></div>\n";
     }
     
     protected function createJSOpen() {
-        $this->rendered .= "<script type=\"text/javascript\">";
+        $this->rendered .= "<script type=\"text/javascript\">\n";
     }
     
     protected function createJSClose() {
-        $this->rendered .= "</script>";
+        $this->rendered .= "</script>\n";
     }
 
     protected function addHTMLLine($line) {
