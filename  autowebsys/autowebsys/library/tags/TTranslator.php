@@ -5,7 +5,7 @@ require_once('tags/CustomTag.php');
 
 class TTranslator extends CustomTag {
     public function getText($name) {
-        return Translator::_($name);
+        return Translator::_($name[0]);
     }
 }
 ?>
